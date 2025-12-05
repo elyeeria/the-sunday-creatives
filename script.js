@@ -6,30 +6,29 @@ document.addEventListener('DOMContentLoaded', function() {
     
     let mouseX = 0;
     let mouseY = 0;
-    let currentX = 0;
-    let currentY = 0;
     
-    hero.addEventListener('mousemove', function(e) {
-        mouseX = (e.clientX / window.innerWidth - 0.5) * 100;
-        mouseY = (e.clientY / window.innerHeight - 0.5) * 100;
-    });
-    
-    function animate() {
-        currentX += (mouseX - currentX) * 0.05;
-        currentY += (mouseY - currentY) * 0.05;
-        
-        textLayers.forEach((layer, index) => {
-            const speed = parseFloat(layer.getAttribute('data-speed'));
-            const x = currentX * speed;
-            const y = currentY * speed;
-            
-            layer.style.transform += ` translate(${x}px, ${y}px)`;
+    if (hero && textLayers.length > 0) {
+        hero.addEventListener('mousemove', function(e) {
+            mouseX = (e.clientX / window.innerWidth - 0.5) * 50;
+            mouseY = (e.clientY / window.innerHeight - 0.5) * 50;
         });
         
-        requestAnimationFrame(animate);
+        function animate() {
+            textLayers.forEach((layer) => {
+                const speed = parseFloat(layer.getAttribute('data-speed')) || 1;
+                const x = mouseX * speed;
+                const y = mouseY * speed;
+                
+                // Apply transform without overriding CSS animations
+                layer.style.setProperty('--mouse-x', `${x}px`);
+                layer.style.setProperty('--mouse-y', `${y}px`);
+            });
+            
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
     }
-    
-    animate();
     
     // Get all navigation links
     const navLinks = document.querySelectorAll('.nav-links a');
