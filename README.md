@@ -4,7 +4,7 @@ A modern, responsive website for The Sunday Creatives - showcasing creative solu
 
 ## 🌐 Live Site
 
-Visit our live site at: `https://[your-username].github.io/the-sunday-creatives`
+Visit our live site at: `https://elyeeria.github.io/the-sunday-creatives`
 
 ## 🚀 GitHub Pages Setup
 

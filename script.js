@@ -1,5 +1,36 @@
-// Smooth scrolling for navigation links
+// Kinetic Typography Effect
 document.addEventListener('DOMContentLoaded', function() {
+    // Mouse-reactive kinetic text
+    const hero = document.querySelector('.hero');
+    const textLayers = document.querySelectorAll('.text-layer');
+    
+    let mouseX = 0;
+    let mouseY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    
+    hero.addEventListener('mousemove', function(e) {
+        mouseX = (e.clientX / window.innerWidth - 0.5) * 100;
+        mouseY = (e.clientY / window.innerHeight - 0.5) * 100;
+    });
+    
+    function animate() {
+        currentX += (mouseX - currentX) * 0.05;
+        currentY += (mouseY - currentY) * 0.05;
+        
+        textLayers.forEach((layer, index) => {
+            const speed = parseFloat(layer.getAttribute('data-speed'));
+            const x = currentX * speed;
+            const y = currentY * speed;
+            
+            layer.style.transform += ` translate(${x}px, ${y}px)`;
+        });
+        
+        requestAnimationFrame(animate);
+    }
+    
+    animate();
+    
     // Get all navigation links
     const navLinks = document.querySelectorAll('.nav-links a');
     
@@ -24,15 +55,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Add scroll effect to header
+    // Add scroll effect to header - make it more visible against dark hero
     window.addEventListener('scroll', function() {
         const header = document.querySelector('header');
-        if (window.scrollY > 100) {
-            header.style.background = 'rgba(255, 255, 255, 0.95)';
-            header.style.backdropFilter = 'blur(10px)';
+        if (window.scrollY > window.innerHeight - 100) {
+            header.classList.add('scrolled');
         } else {
-            header.style.background = '#fff';
-            header.style.backdropFilter = 'none';
+            header.classList.remove('scrolled');
         }
     });
     
