@@ -64,6 +64,33 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Parallax scroll effect - collapse sections as user scrolls
+    function handleScrollCollapse() {
+        const scrollY = window.scrollY;
+        const heroSection = document.querySelector('.hero-section');
+        const eventsSection = document.querySelector('.events-section');
+        
+        if (heroSection) {
+            // Scale down hero section as user scrolls (0.5 = 50% collapse rate)
+            const heroScale = Math.max(0, 1 - (scrollY / window.innerHeight) * 0.5);
+            heroSection.style.transform = `scale(${heroScale})`;
+            heroSection.style.transformOrigin = 'top center';
+            heroSection.style.opacity = heroScale;
+        }
+        
+        if (eventsSection) {
+            // Start collapsing events section after hero is scrolled past
+            const eventsStart = window.innerHeight;
+            const eventsScrollY = Math.max(0, scrollY - eventsStart);
+            const eventsScale = Math.max(0, 1 - (eventsScrollY / window.innerHeight) * 0.5);
+            eventsSection.style.transform = `scale(${eventsScale})`;
+            eventsSection.style.transformOrigin = 'top center';
+        }
+    }
+    
+    window.addEventListener('scroll', handleScrollCollapse);
+    handleScrollCollapse(); // Initialize on load
+    
     // Shift hero title when navbar expands
     const navbar = document.querySelector('.navbar');
     const heroTitle = document.querySelector('.hero-title');
