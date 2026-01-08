@@ -12,20 +12,27 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Dynamic hero title sizing to maintain margins
     function resizeHeroTitle() {
-        if (!heroTitle || !titleLine1) return;
+        if (!heroTitle || !titleLine1 || !heroSection) return;
         
-        // Get the actual available viewport width (minus sidebar and extra spacing)
-        const viewportWidth = window.innerWidth - 180; // 80px sidebar + 100px extra spacing
-        
-        // Use 70% of viewport for the title (15% margin each side for better spacing)
+        // Calculate available space
+        const viewportWidth = window.innerWidth - 180;
+        const viewportHeight = window.innerHeight;
         const availableWidth = viewportWidth * 0.7;
         
-        // Reset to minimum to get accurate measurements
+        // Calculate available height: 100vh - 20rem margins - subtitle - button - gaps
+        const remInPx = parseFloat(getComputedStyle(document.documentElement).fontSize);
+        const marginSpace = 20 * remInPx; // 10rem top + 10rem bottom
+        const subtitleHeight = 1.2 * remInPx * 1.4; // 1.2rem font-size with line-height
+        const buttonHeight = 0.8 * remInPx * 2 + 3 * remInPx; // padding + borders/spacing
+        const gapSpace = 0.5 * remInPx + 1.5 * remInPx + 1.5 * remInPx; // title gap + subtitle margin + button margin
+        const availableHeight = viewportHeight - marginSpace - subtitleHeight - buttonHeight - gapSpace;
+        
+        // Reset to minimum
         heroTitle.style.fontSize = '1px';
         
-        // Binary search for optimal font size based on first line
+        // Binary search for optimal font size
         let minSize = 1;
-        let maxSize = viewportWidth * 2; // Allow very large sizes
+        let maxSize = viewportWidth * 2;
         let fontSize = 1;
         let iterations = 0;
         const maxIterations = 50;
@@ -34,11 +41,12 @@ document.addEventListener('DOMContentLoaded', function() {
             fontSize = Math.floor((minSize + maxSize) / 2);
             heroTitle.style.fontSize = fontSize + 'px';
             
-            // Force layout recalculation
             void titleLine1.offsetWidth;
             const textWidth = titleLine1.scrollWidth;
+            const titleHeight = heroTitle.scrollHeight;
             
-            if (textWidth <= availableWidth) {
+            // Check both width and height constraints
+            if (textWidth <= availableWidth && titleHeight <= availableHeight) {
                 minSize = fontSize;
             } else {
                 maxSize = fontSize;
@@ -46,8 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
             iterations++;
         }
         
-        // Apply final size with small safety margin
-        const finalSize = Math.floor(minSize * 0.98);
+        // Apply final size with safety margin
+        const finalSize = Math.floor(minSize * 0.95);
         heroTitle.style.fontSize = finalSize + 'px';
         
         console.log('Title resized:', finalSize + 'px', 'Available width:', availableWidth + 'px');
