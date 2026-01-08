@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Binary search for optimal font size
         let minSize = 10;
-        let maxSize = 500;
+        let maxSize = 300;
         let fontSize = 10;
         
         while (maxSize - minSize > 0.5) {
@@ -24,15 +24,15 @@ document.addEventListener('DOMContentLoaded', function() {
             // Force reflow to get accurate width
             const textWidth = heroTitle.scrollWidth;
             
-            if (textWidth <= availableWidth) {
+            if (textWidth < availableWidth) {
                 minSize = fontSize;
             } else {
                 maxSize = fontSize;
             }
         }
         
-        // Apply the final size with a small safety margin
-        heroTitle.style.fontSize = (minSize * 0.98) + 'px';
+        // Apply the final size with a safety margin to prevent overflow
+        heroTitle.style.fontSize = (minSize * 0.95) + 'px';
     }
     
     // Call on load with a slight delay to ensure fonts are loaded
