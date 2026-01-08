@@ -23,7 +23,20 @@ body {
     font-style: normal;
 }
 
-h1, h2, h3, .hero-title, .section-title, .event-title {
+/* Loved by the King Font */
+.loved-by-the-king-regular {
+    font-family: "Loved by the King", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+
+h1, .hero-title {
+    font-family: "Loved by the King", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+
+h2, h3, .section-title, .event-title {
     font-family: "Belleza", sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -131,13 +144,15 @@ h1, h2, h3, .hero-title, .section-title, .event-title {
 }
 
 .hero-title {
-    font-size: clamp(3rem, 10vw, 8rem);
-    font-weight: 900;
+    font-size: clamp(3rem, 20vw, 70vh);
+    font-weight: 400;
+    line-height: 0.9;
     color: white;
     text-transform: uppercase;
     letter-spacing: -0.02em;
     text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     animation: fadeInUp 1s ease-out;
+    max-width: 90%;
 }
 
 @keyframes fadeInUp {
@@ -296,9 +311,43 @@ h1, h2, h3, .hero-title, .section-title, .event-title {
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+    .nav-container {
+        gap: 0.5rem;
+        padding: 0 1rem;
+    }
+    
+    .nav-link {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    .navbar:hover .nav-link {
+        font-size: 1rem;
+    }
+    
+    .hero-title {
+        font-size: clamp(2.5rem, 18vw, 60vh);
+        max-width: 95%;
+    }
+    
+    .events-section {
+        padding: 4rem 1.5rem;
+    }
+    
+    .section-title {
+        font-size: 2.5rem;
+    }
+    
+    .event-card {
+        flex: 0 0 320px;
+    }
+}
+
 @media (max-width: 768px) {
     .nav-container {
         gap: 0.25rem;
+        padding: 0 0.5rem;
     }
     
     .nav-link {
@@ -307,23 +356,120 @@ h1, h2, h3, .hero-title, .section-title, .event-title {
     }
     
     .navbar:hover .nav-link {
-        font-size: 1rem;
+        font-size: 0.95rem;
         padding: 0.6rem 1rem;
     }
     
     .hero-title {
-        font-size: clamp(2rem, 8vw, 4rem);
+        font-size: clamp(2rem, 15vw, 50vh);
+        max-width: 90%;
+        line-height: 1;
     }
     
     .events-section {
         padding: 3rem 1rem;
     }
     
+    .section-title {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+    
     .event-card {
         flex: 0 0 280px;
     }
     
+    .event-image-wrapper {
+        height: 200px;
+    }
+    
+    .event-info {
+        padding: 1.25rem;
+    }
+    
+    .event-title {
+        font-size: 1.3rem;
+    }
+    
+    .footer {
+        padding: 2.5rem 1.5rem;
+    }
+    
+    .footer-text {
+        font-size: 1.3rem;
+    }
+    
+    .calendar-link {
+        padding: 0.9rem 2rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        padding: 0.3rem 0;
+    }
+    
+    .navbar:hover {
+        padding: 1rem 0;
+    }
+    
+    .nav-container {
+        flex-wrap: wrap;
+        gap: 0.3rem;
+        justify-content: center;
+    }
+    
+    .nav-link {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.6rem;
+    }
+    
+    .navbar:hover .nav-link {
+        font-size: 0.85rem;
+        padding: 0.5rem 0.8rem;
+    }
+    
+    .hero-title {
+        font-size: clamp(1.5rem, 12vw, 40vh);
+        max-width: 95%;
+        letter-spacing: -0.01em;
+    }
+    
     .section-title {
-        font-size: 2rem;
+        font-size: 1.75rem;
+    }
+    
+    .event-card {
+        flex: 0 0 260px;
+    }
+    
+    .event-image-wrapper {
+        height: 180px;
+    }
+    
+    .event-info {
+        padding: 1rem;
+    }
+    
+    .event-title {
+        font-size: 1.2rem;
+    }
+    
+    .event-date {
+        font-size: 0.9rem;
+    }
+    
+    .footer-text {
+        font-size: 1.2rem;
+    }
+    
+    .calendar-link {
+        padding: 0.8rem 1.8rem;
+        font-size: 0.95rem;
+    }
+    
+    .footer-copyright {
+        font-size: 0.85rem;
     }
 }
