@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Parallax scroll effect - collapse sections as user scrolls
+    // Parallax scroll effect - fade out sections as user scrolls
     let scrollThrottle;
     function handleScrollCollapse() {
         if (scrollThrottle) return;
@@ -77,20 +77,25 @@ document.addEventListener('DOMContentLoaded', function() {
         const eventsSection = document.querySelector('.events-section');
         
         if (heroSection) {
-            // Collapse hero section vertically only as user scrolls
-            const heroScale = Math.max(0, 1 - (scrollY / window.innerHeight));
-            heroSection.style.transform = `scaleY(${heroScale})`;
-            heroSection.style.transformOrigin = 'top center';
-            heroSection.style.opacity = heroScale;
+            // Fade out hero section as user scrolls (collapses by 50vh instead of 100vh)
+            const collapseDistance = window.innerHeight * 0.5; // Collapse over half viewport
+            const heroOpacity = Math.max(0, 1 - (scrollY / collapseDistance));
+            heroSection.style.opacity = heroOpacity;
+            // Keep height but make content invisible
+            if (heroOpacity === 0) {
+                heroSection.style.pointerEvents = 'none';
+            } else {
+                heroSection.style.pointerEvents = 'auto';
+            }
         }
         
         if (eventsSection) {
-            // Start collapsing events section after hero is scrolled past
+            // Start fading events section after hero is scrolled past
             const eventsStart = window.innerHeight;
             const eventsScrollY = Math.max(0, scrollY - eventsStart);
-            const eventsScale = Math.max(0, 1 - (eventsScrollY / window.innerHeight));
-            eventsSection.style.transform = `scaleY(${eventsScale})`;
-            eventsSection.style.transformOrigin = 'top center';
+            const collapseDistance = window.innerHeight * 0.5; // Collapse over half viewport
+            const eventsOpacity = Math.max(0, 1 - (eventsScrollY / collapseDistance));
+            eventsSection.style.opacity = eventsOpacity;
         }
     }
     

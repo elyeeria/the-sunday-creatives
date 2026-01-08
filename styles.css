@@ -169,7 +169,8 @@ h2, h3, .section-title, .event-title {
     display: flex;
     align-items: center;
     justify-content: center;
-    will-change: transform, opacity;
+    will-change: opacity;
+    transition: opacity 0.1s linear;
 }
 
 .hero-background {
@@ -205,7 +206,7 @@ h2, h3, .section-title, .event-title {
     padding: 2rem;
     width: 100%;
     max-width: 80vw;
-    margin-top: 5rem;
+    margin-top: 10rem;
 }
 
 .hero-content:hover .hero-title,
