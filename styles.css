@@ -137,9 +137,10 @@ h2, h3, .section-title, .event-title {
     display: flex;
     flex-direction: column;
     gap: 3rem;
-    padding: 0 1.25rem;
+    padding: 0;
     align-items: center;
     width: 100%;
+    justify-content: center;
 }
 
 .nav-link {
@@ -147,7 +148,7 @@ h2, h3, .section-title, .event-title {
     text-decoration: none;
     font-size: 1.25rem;
     font-weight: 500;
-    padding: 0;
+    padding: 0 1.25rem;
     transition: all 0.3s ease;
     opacity: 0.8;
     display: flex;
@@ -155,12 +156,16 @@ h2, h3, .section-title, .event-title {
     justify-content: flex-start;
     gap: 1rem;
     white-space: nowrap;
+    width: auto;
 }
 
 .nav-icon {
     font-size: 1.5rem;
     min-width: 30px;
-    display: inline-block;
+    max-width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .nav-icon img {
