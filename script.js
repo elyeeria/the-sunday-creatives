@@ -1,25 +1,292 @@
+// Particle System
+class Particle {
+    constructor(canvas, x, y, images) {
+        this.canvas = canvas;
+        this.x = x || Math.random() * canvas.width;
+        this.y = y || Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 2;
+        this.vy = (Math.random() - 0.5) * 2;
+        this.size = Math.random() * 40 + 20; // Size for images
+        this.life = 1;
+        this.decay = Math.random() * 0.01 + 0.005;
+        this.rotation = Math.random() * Math.PI * 2;
+        this.rotationSpeed = (Math.random() - 0.5) * 0.1;
+        
+        // Select random image from array
+        this.image = images[Math.floor(Math.random() * images.length)];
+        this.useImage = images.length > 0 && this.image.complete;
+    }
+    
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.life -= this.decay;
+        this.rotation += this.rotationSpeed;
+        
+        // Wrap around edges
+        if (this.x < 0) this.x = this.canvas.width;
+        if (this.x > this.canvas.width) this.x = 0;
+        if (this.y < 0) this.y = this.canvas.height;
+        if (this.y > this.canvas.height) this.y = 0;
+        
+        return this.life > 0;
+    }
+    
+    draw(ctx) {
+        ctx.save();
+        ctx.globalAlpha = this.life;
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        
+        if (this.useImage && this.image.complete) {
+            // Draw PNG image
+            ctx.drawImage(
+                this.image,
+                -this.size / 2,
+                -this.size / 2,
+                this.size,
+                this.size
+            );
+        } else {
+            // Fallback to colored circles if image not loaded
+            ctx.fillStyle = 'rgba(255, 0, 255, ' + this.life + ')';
+            ctx.beginPath();
+            ctx.arc(0, 0, this.size / 4, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        ctx.restore();
+    }
+}
+
+// Generative Pattern
+class GenerativePattern {
+    constructor(canvas, ctx, images) {
+        this.canvas = canvas;
+        this.ctx = ctx;
+        this.time = 0;
+        this.shapes = [];
+        this.images = images;
+        this.initShapes();
+    }
+    
+    initShapes() {
+        const numShapes = 15;
+        for (let i = 0; i < numShapes; i++) {
+            this.shapes.push({
+                x: Math.random() * this.canvas.width,
+                y: Math.random() * this.canvas.height,
+                size: Math.random() * 150 + 75,
+                rotation: Math.random() * Math.PI * 2,
+                rotationSpeed: (Math.random() - 0.5) * 0.02,
+                type: Math.floor(Math.random() * 3),
+                opacity: Math.random() * 0.3 + 0.1,
+                speedX: (Math.random() - 0.5) * 0.5,
+                speedY: (Math.random() - 0.5) * 0.5,
+                image: this.images.length > 0 ? this.images[Math.floor(Math.random() * this.images.length)] : null
+            });
+        }
+    }
+    
+    draw() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.time += 0.01;
+        
+        this.shapes.forEach(shape => {
+            this.ctx.save();
+            
+            // Move shape
+            shape.x += shape.speedX;
+            shape.y += shape.speedY;
+            
+            // Wrap around edges
+            if (shape.x < -shape.size) shape.x = this.canvas.width + shape.size;
+            if (shape.x > this.canvas.width + shape.size) shape.x = -shape.size;
+            if (shape.y < -shape.size) shape.y = this.canvas.height + shape.size;
+            if (shape.y > this.canvas.height + shape.size) shape.y = -shape.size;
+            
+            this.ctx.translate(shape.x, shape.y);
+            shape.rotation += shape.rotationSpeed;
+            this.ctx.rotate(shape.rotation);
+            
+            this.ctx.globalAlpha = shape.opacity;
+            
+            // Draw PNG image if available
+            if (shape.image && shape.image.complete) {
+                this.ctx.drawImage(
+                    shape.image,
+                    -shape.size / 2,
+                    -shape.size / 2,
+                    shape.size,
+                    shape.size
+                );
+            } else {
+                // Fallback to geometric shapes
+                const color = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, ${shape.opacity})`;
+                this.ctx.strokeStyle = color;
+                this.ctx.lineWidth = 2;
+                
+                switch(shape.type) {
+                    case 0: // Triangle
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(0, -shape.size / 2);
+                        this.ctx.lineTo(shape.size / 2, shape.size / 2);
+                        this.ctx.lineTo(-shape.size / 2, shape.size / 2);
+                        this.ctx.closePath();
+                        this.ctx.stroke();
+                        break;
+                    case 1: // Circle
+                        this.ctx.beginPath();
+                        this.ctx.arc(0, 0, shape.size / 2, 0, Math.PI * 2);
+                        this.ctx.stroke();
+                        break;
+                    case 2: // Square
+                        this.ctx.strokeRect(-shape.size / 2, -shape.size / 2, shape.size, shape.size);
+                        break;
+                }
+            }
+            
+            this.ctx.restore();
+        });
+    }
+}
+
 // Kinetic Typography Effect
 document.addEventListener('DOMContentLoaded', function() {
-    // Mouse-reactive kinetic text
+    // Setup Canvases
+    const particleCanvas = document.getElementById('particleCanvas');
+    const patternCanvas = document.getElementById('patternCanvas');
     const hero = document.querySelector('.hero');
-    const textLayers = document.querySelectorAll('.text-layer');
     
-    let mouseX = 0;
-    let mouseY = 0;
+    if (!particleCanvas || !patternCanvas) return;
     
-    if (hero && textLayers.length > 0) {
+    const particleCtx = particleCanvas.getContext('2d');
+    const patternCtx = patternCanvas.getContext('2d');
+    
+    // Set canvas sizes
+    function resizeCanvas() {
+        particleCanvas.width = window.innerWidth;
+        particleCanvas.height = window.innerHeight;
+        patternCanvas.width = window.innerWidth;
+        patternCanvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    // Load PNG images for particles and patterns
+    // TO USE YOUR OWN IMAGES: Add image paths to these arrays
+    const particleImagePaths = [
+        // 'images/particle1.png',
+        // 'images/particle2.png',
+        // 'images/particle3.png',
+    ];
+    
+    const patternImagePaths = [
+        // 'images/pattern1.png',
+        // 'images/pattern2.png',
+        // 'images/pattern3.png',
+    ];
+    
+    // Preload images
+    const particleImages = [];
+    const patternImages = [];
+    
+    let imagesLoaded = 0;
+    const totalImages = particleImagePaths.length + patternImagePaths.length;
+    
+    function imageLoaded() {
+        imagesLoaded++;
+        if (imagesLoaded === totalImages || totalImages === 0) {
+            startAnimation();
+        }
+    }
+    
+    // Load particle images
+    particleImagePaths.forEach(path => {
+        const img = new Image();
+        img.onload = imageLoaded;
+        img.onerror = imageLoaded;
+        img.src = path;
+        particleImages.push(img);
+    });
+    
+    // Load pattern images
+    patternImagePaths.forEach(path => {
+        const img = new Image();
+        img.onload = imageLoaded;
+        img.onerror = imageLoaded;
+        img.src = path;
+        patternImages.push(img);
+    });
+    
+    // If no images, start immediately
+    if (totalImages === 0) {
+        startAnimation();
+    }
+    
+    function startAnimation() {
+        // Initialize systems
+        const particles = [];
+        const maxParticles = 150;
+        const generativePattern = new GenerativePattern(patternCanvas, patternCtx, patternImages);
+        
+        // Mouse tracking
+        let mouseX = 0;
+        let mouseY = 0;
+        let isMouseMoving = false;
+        
         hero.addEventListener('mousemove', function(e) {
-            mouseX = (e.clientX / window.innerWidth - 0.5) * 50;
-            mouseY = (e.clientY / window.innerHeight - 0.5) * 50;
+            const rect = hero.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
+            isMouseMoving = true;
+            
+            // Create particles on mouse move
+            if (Math.random() > 0.7) {
+                particles.push(new Particle(particleCanvas, mouseX, mouseY, particleImages));
+            }
         });
         
+        // Kinetic text
+        const textLayers = document.querySelectorAll('.text-layer');
+        let textMouseX = 0;
+        let textMouseY = 0;
+        
+        if (textLayers.length > 0) {
+            hero.addEventListener('mousemove', function(e) {
+                textMouseX = (e.clientX / window.innerWidth - 0.5) * 50;
+                textMouseY = (e.clientY / window.innerHeight - 0.5) * 50;
+            });
+        }
+        
+        // Animation loop
         function animate() {
+            // Clear particle canvas
+            particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+            
+            // Add random particles
+            if (particles.length < maxParticles && Math.random() > 0.95) {
+                particles.push(new Particle(particleCanvas, undefined, undefined, particleImages));
+            }
+            
+            // Update and draw particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                if (particles[i].update()) {
+                    particles[i].draw(particleCtx);
+                } else {
+                    particles.splice(i, 1);
+                }
+            }
+            
+            // Draw generative pattern
+            generativePattern.draw();
+            
+            // Update text layers
             textLayers.forEach((layer) => {
                 const speed = parseFloat(layer.getAttribute('data-speed')) || 1;
-                const x = mouseX * speed;
-                const y = mouseY * speed;
+                const x = textMouseX * speed;
+                const y = textMouseY * speed;
                 
-                // Apply transform without overriding CSS animations
                 layer.style.setProperty('--mouse-x', `${x}px`);
                 layer.style.setProperty('--mouse-y', `${y}px`);
             });
