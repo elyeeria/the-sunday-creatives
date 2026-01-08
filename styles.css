@@ -269,9 +269,9 @@ h2, h3, .section-title, .event-title {
     margin-top: 2rem;
     padding: 1rem 2rem;
     background: linear-gradient(135deg, 
-        rgba(20, 25, 35, 0.4) 0%,
-        rgba(30, 25, 35, 0.35) 50%,
-        rgba(25, 30, 40, 0.4) 100%);
+        rgba(20, 25, 35, 0.2) 0%,
+        rgba(30, 25, 35, 0.15) 50%,
+        rgba(25, 30, 40, 0.2) 100%);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -289,9 +289,9 @@ h2, h3, .section-title, .event-title {
 
 .instagram-button:hover {
     background: linear-gradient(135deg, 
-        rgba(20, 25, 35, 0.6) 0%,
-        rgba(30, 25, 35, 0.55) 50%,
-        rgba(25, 30, 40, 0.6) 100%);
+        rgba(20, 25, 35, 0.35) 0%,
+        rgba(30, 25, 35, 0.3) 50%,
+        rgba(25, 30, 40, 0.35) 100%);
     border-color: rgba(255, 255, 255, 0.3);
     transform: translateY(-2px);
     box-shadow: 
