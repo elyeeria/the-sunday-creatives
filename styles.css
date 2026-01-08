@@ -45,9 +45,8 @@ h2, h3, .section-title, .event-title {
 /* Sidebar Navigation */
 .navbar {
     position: fixed;
-    top: 50%;
+    top: 10vh;
     left: 0;
-    transform: translateY(-50%);
     height: auto;
     width: 80px;
     background: rgba(0, 0, 0, 0.05);
