@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const heroTitle = document.querySelector('.hero-title');
         if (!heroTitle) return;
         
-        const availableWidth = window.innerWidth * 0.9; // 90vw (5% margin each side)
+        const availableWidth = window.innerWidth * 0.96; // 96vw (2% margin each side)
         
         // Reset to ensure accurate measurement
         heroTitle.style.fontSize = '10px';
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Apply the final size with a safety margin to prevent overflow
-        heroTitle.style.fontSize = (minSize * 0.95) + 'px';
+        heroTitle.style.fontSize = (minSize * 0.98) + 'px';
     }
     
     // Call on load with a slight delay to ensure fonts are loaded
