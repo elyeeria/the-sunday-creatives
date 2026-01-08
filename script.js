@@ -65,7 +65,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Parallax scroll effect - collapse sections as user scrolls
+    let scrollThrottle;
     function handleScrollCollapse() {
+        if (scrollThrottle) return;
+        scrollThrottle = setTimeout(() => {
+            scrollThrottle = null;
+        }, 10); // Throttle to ~60fps
+        
         const scrollY = window.scrollY;
         const heroSection = document.querySelector('.hero-section');
         const eventsSection = document.querySelector('.events-section');
