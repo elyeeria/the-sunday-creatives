@@ -308,6 +308,7 @@ h2, h3, .section-title, .event-title {
     background: #f9f9f9;
     min-height: 100vh;
     margin-left: calc(80px + 1rem);
+    transition: opacity 0.1s linear;
 }
 
 .events-container {

@@ -2,10 +2,16 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     
+    // Cache DOM elements
+    const heroTitle = document.querySelector('.hero-title');
+    const titleLine1 = document.querySelector('.title-line-1');
+    const heroSection = document.querySelector('.hero-section');
+    const eventsSection = document.querySelector('.events-section');
+    const navbar = document.querySelector('.navbar');
+    const eventsGallery = document.querySelector('.events-gallery');
+    
     // Dynamic hero title sizing to maintain margins
     function resizeHeroTitle() {
-        const heroTitle = document.querySelector('.hero-title');
-        const titleLine1 = document.querySelector('.title-line-1');
         if (!heroTitle || !titleLine1) return;
         
         // Get the actual available viewport width (minus sidebar and extra spacing)
@@ -73,20 +79,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 10); // Throttle to ~60fps
         
         const scrollY = window.scrollY;
-        const heroSection = document.querySelector('.hero-section');
-        const eventsSection = document.querySelector('.events-section');
         
         if (heroSection) {
             // Fade out hero section as user scrolls (collapses by 50vh instead of 100vh)
             const collapseDistance = window.innerHeight * 0.5; // Collapse over half viewport
             const heroOpacity = Math.max(0, 1 - (scrollY / collapseDistance));
             heroSection.style.opacity = heroOpacity;
-            // Keep height but make content invisible
-            if (heroOpacity === 0) {
-                heroSection.style.pointerEvents = 'none';
-            } else {
-                heroSection.style.pointerEvents = 'auto';
-            }
+            heroSection.style.pointerEvents = heroOpacity === 0 ? 'none' : 'auto';
         }
         
         if (eventsSection) {
@@ -99,13 +98,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    window.addEventListener('scroll', handleScrollCollapse);
+    window.addEventListener('scroll', handleScrollCollapse, { passive: true });
     handleScrollCollapse(); // Initialize on load
     
     // Shift hero title when navbar expands
-    const navbar = document.querySelector('.navbar');
-    const heroTitle = document.querySelector('.hero-title');
-    
     if (navbar && heroTitle) {
         navbar.addEventListener('mouseenter', function() {
             heroTitle.style.transform = 'translateX(50px)'; // (180px - 80px) / 2 = 50px
@@ -140,8 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Add scroll indicator for events gallery
-    const eventsGallery = document.querySelector('.events-gallery');
-    
     if (eventsGallery) {
         // Check if gallery is scrollable
         function checkScrollable() {
