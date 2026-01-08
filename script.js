@@ -8,8 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const titleLine1 = document.querySelector('.title-line-1');
         if (!heroTitle || !titleLine1) return;
         
-        // Get the actual available viewport width (minus sidebar)
-        const viewportWidth = window.innerWidth - 80; // 80px sidebar
+        // Get the actual available viewport width (minus sidebar and extra spacing)
+        const viewportWidth = window.innerWidth - 180; // 80px sidebar + 100px extra spacing
         
         // Use 80% of viewport for the title (10% margin each side)
         const availableWidth = viewportWidth * 0.8;
