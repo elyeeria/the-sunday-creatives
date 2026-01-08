@@ -138,7 +138,6 @@ h2, h3, .section-title, .event-title {
     flex-direction: column;
     gap: 3rem;
     padding: 0;
-    align-items: center;
     width: 100%;
 }
 
@@ -155,6 +154,7 @@ h2, h3, .section-title, .event-title {
     justify-content: center;
     gap: 1rem;
     white-space: nowrap;
+    width: 100%;
 }
 
 .nav-icon {
