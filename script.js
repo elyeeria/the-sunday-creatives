@@ -2,48 +2,65 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     
-    // Dynamic hero title sizing to maintain 5% margins
+    // Dynamic hero title sizing to maintain margins
     function resizeHeroTitle() {
         const heroTitle = document.querySelector('.hero-title');
         if (!heroTitle) return;
         
-        // Account for collapsed sidebar width (80px) and use 80% of remaining width
-        const sidebarWidth = 80;
-        const availableWidth = (window.innerWidth - sidebarWidth) * 0.8;
+        // Get the actual available viewport width (minus sidebar)
+        const viewportWidth = window.innerWidth - 80; // 80px sidebar
         
-        // Reset to ensure accurate measurement
-        heroTitle.style.fontSize = '10px';
+        // Use 80% of viewport for the title (10% margin each side)
+        const availableWidth = viewportWidth * 0.8;
         
-        // Binary search for optimal font size - scale max size with screen width
-        let minSize = 10;
-        let maxSize = window.innerWidth; // Use screen width as max to allow proper scaling
-        let fontSize = 10;
+        // Reset to minimum to get accurate measurements
+        heroTitle.style.fontSize = '1px';
         
-        while (maxSize - minSize > 1) {
-            fontSize = (minSize + maxSize) / 2;
+        // Binary search for optimal font size
+        let minSize = 1;
+        let maxSize = viewportWidth * 2; // Allow very large sizes
+        let fontSize = 1;
+        let iterations = 0;
+        const maxIterations = 50;
+        
+        while (maxSize - minSize > 1 && iterations < maxIterations) {
+            fontSize = Math.floor((minSize + maxSize) / 2);
             heroTitle.style.fontSize = fontSize + 'px';
             
-            // Force reflow to get accurate width
+            // Force layout recalculation
+            void heroTitle.offsetWidth;
             const textWidth = heroTitle.scrollWidth;
             
-            if (textWidth < availableWidth) {
+            if (textWidth <= availableWidth) {
                 minSize = fontSize;
             } else {
                 maxSize = fontSize;
             }
+            iterations++;
         }
         
-        // Apply the final size with a small safety margin to prevent overflow
-        heroTitle.style.fontSize = (minSize * 0.99) + 'px';
+        // Apply final size with small safety margin
+        const finalSize = Math.floor(minSize * 0.98);
+        heroTitle.style.fontSize = finalSize + 'px';
+        
+        console.log('Title resized:', finalSize + 'px', 'Available width:', availableWidth + 'px');
     }
     
-    // Call on load with a slight delay to ensure fonts are loaded
-    setTimeout(resizeHeroTitle, 100);
-    window.addEventListener('resize', resizeHeroTitle);
+    // Call on load with delay for fonts
+    setTimeout(resizeHeroTitle, 150);
+    
+    // Call on window resize with debounce
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(resizeHeroTitle, 100);
+    });
     
     // Re-run when fonts are fully loaded
     if (document.fonts) {
-        document.fonts.ready.then(resizeHeroTitle);
+        document.fonts.ready.then(function() {
+            setTimeout(resizeHeroTitle, 100);
+        });
     }
     
     // Smooth scrolling for navigation links
