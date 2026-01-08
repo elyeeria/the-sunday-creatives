@@ -14,18 +14,58 @@ document.addEventListener('DOMContentLoaded', function() {
     function resizeHeroTitle() {
         if (!heroTitle || !titleLine1 || !heroSection) return;
         
-        // Calculate available space
-        const viewportWidth = window.innerWidth - 180;
+        // Calculate available space with responsive adjustments
+        const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
-        const availableWidth = viewportWidth * 0.7;
         
-        // Calculate available height: 100vh - 10rem margins - subtitle - button - gaps
+        // Adjust navbar width based on screen size
+        let navbarWidth = 180;
+        if (viewportWidth <= 480) {
+            navbarWidth = 50;
+        } else if (viewportWidth <= 768) {
+            navbarWidth = 60;
+        } else if (viewportWidth <= 1024) {
+            navbarWidth = 80;
+        }
+        
+        const availableWidth = (viewportWidth - navbarWidth) * 0.7;
+        
+        // Calculate available height with responsive margins
         const remInPx = parseFloat(getComputedStyle(document.documentElement).fontSize);
-        const marginSpace = 10 * remInPx; // 5rem top + 5rem bottom
-        const subtitleHeight = 1.2 * remInPx * 1.4; // 1.2rem font-size with line-height
-        const buttonHeight = 0.8 * remInPx * 2 + 3 * remInPx; // padding + borders/spacing
-        const gapSpace = 0.5 * remInPx + 1.5 * remInPx + 1.5 * remInPx; // title gap + subtitle margin + button margin
-        const availableHeight = viewportHeight - marginSpace - subtitleHeight - buttonHeight - gapSpace;
+        let marginSpace;
+        let subtitleSize;
+        let buttonPadding;
+        let gapSpacing;
+        
+        if (viewportWidth <= 360) {
+            marginSpace = 3 * remInPx; // 1.5rem top + 1.5rem bottom
+            subtitleSize = 0.8 * remInPx * 1.4;
+            buttonPadding = 0.4 * remInPx * 2;
+            gapSpacing = 0.2 * remInPx + 0.8 * remInPx + 0.8 * remInPx;
+        } else if (viewportWidth <= 480) {
+            marginSpace = 4 * remInPx; // 2rem top + 2rem bottom
+            subtitleSize = 0.9 * remInPx * 1.4;
+            buttonPadding = 0.5 * remInPx * 2;
+            gapSpacing = 0.2 * remInPx + 0.8 * remInPx + 0.8 * remInPx;
+        } else if (viewportWidth <= 768) {
+            marginSpace = 6 * remInPx; // 3rem top + 3rem bottom
+            subtitleSize = 1.0 * remInPx * 1.4;
+            buttonPadding = 0.6 * remInPx * 2;
+            gapSpacing = 0.3 * remInPx + 1.0 * remInPx + 1.0 * remInPx;
+        } else if (viewportWidth <= 1024) {
+            marginSpace = 8 * remInPx; // 4rem top + 4rem bottom
+            subtitleSize = 1.1 * remInPx * 1.4;
+            buttonPadding = 0.7 * remInPx * 2;
+            gapSpacing = 0.5 * remInPx + 1.2 * remInPx + 1.2 * remInPx;
+        } else {
+            marginSpace = 10 * remInPx; // 5rem top + 5rem bottom
+            subtitleSize = 1.2 * remInPx * 1.4;
+            buttonPadding = 0.8 * remInPx * 2;
+            gapSpacing = 0.5 * remInPx + 1.5 * remInPx + 1.5 * remInPx;
+        }
+        
+        const buttonHeight = buttonPadding + 3 * remInPx;
+        const availableHeight = viewportHeight - marginSpace - subtitleSize - buttonHeight - gapSpacing;
         
         // Reset to minimum
         heroTitle.style.fontSize = '1px';
