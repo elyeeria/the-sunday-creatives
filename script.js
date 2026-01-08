@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const totalCards = eventCards.length;
         let currentRotation = 0;
         const angleIncrement = 360 / totalCards;
-        const radius = 500; // Distance from center
+        const radius = 350; // Reduced distance from center for better visibility
         
         // Position cards in 3D circle
         function positionCards() {
@@ -192,10 +192,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 const x = Math.sin(angle) * radius;
                 const z = Math.cos(angle) * radius;
                 
+                // Cards always face the user (no rotation)
                 card.style.transform = `
                     translateX(${x}px)
                     translateZ(${z}px)
-                    rotateY(${-angleIncrement * index}deg)
                 `;
             });
         }

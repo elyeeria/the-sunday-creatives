@@ -347,7 +347,7 @@ h2, h3, .section-title, .event-title {
 
 .events-gallery {
     position: relative;
-    width: 400px;
+    width: 350px;
     height: 500px;
     transform-style: preserve-3d;
     transition: transform 1s ease;
