@@ -144,15 +144,17 @@ h2, h3, .section-title, .event-title {
 }
 
 .hero-title {
-    font-size: clamp(3rem, 20vw, 70vh);
+    font-size: clamp(2rem, 15vw, 40vh);
     font-weight: 400;
-    line-height: 0.9;
+    line-height: 1;
     color: white;
     text-transform: uppercase;
     letter-spacing: -0.02em;
     text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     animation: fadeInUp 1s ease-out;
-    max-width: 90%;
+    max-width: 95%;
+    white-space: nowrap;
+    text-align: center;
 }
 
 @keyframes fadeInUp {
@@ -327,8 +329,9 @@ h2, h3, .section-title, .event-title {
     }
     
     .hero-title {
-        font-size: clamp(2.5rem, 18vw, 60vh);
+        font-size: clamp(2rem, 12vw, 40vh);
         max-width: 95%;
+        white-space: nowrap;
     }
     
     .events-section {
@@ -361,9 +364,9 @@ h2, h3, .section-title, .event-title {
     }
     
     .hero-title {
-        font-size: clamp(2rem, 15vw, 50vh);
-        max-width: 90%;
-        line-height: 1;
+        font-size: clamp(1.5rem, 10vw, 35vh);
+        max-width: 95%;
+        white-space: nowrap;
     }
     
     .events-section {
@@ -431,9 +434,11 @@ h2, h3, .section-title, .event-title {
     }
     
     .hero-title {
-        font-size: clamp(1.5rem, 12vw, 40vh);
+        font-size: clamp(1.2rem, 8vw, 30vh);
         max-width: 95%;
+        white-space: normal;
         letter-spacing: -0.01em;
+        line-height: 1.1;
     }
     
     .section-title {
