@@ -14,8 +14,6 @@ body {
     line-height: 1.6;
     color: #333;
     overflow-x: hidden;
-    margin-left: 80px;
-    transition: margin-left 0.3s ease;
 }
 
 /* Belleza Font */
@@ -197,9 +195,10 @@ h2, h3, .section-title, .event-title {
 
 /* Events Section */
 .events-section {
-    padding: 5rem 2rem;
-    background: #f8f9fa;
+    padding: 4rem 2rem;
+    background: #f9f9f9;
     min-height: 100vh;
+    margin-left: 80px;
 }
 
 .events-container {
