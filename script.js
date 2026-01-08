@@ -7,7 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const heroTitle = document.querySelector('.hero-title');
         if (!heroTitle) return;
         
-        const availableWidth = window.innerWidth * 0.8; // 80vw (10% margin each side)
+        // Account for collapsed sidebar width (80px) and use 80% of remaining width
+        const sidebarWidth = 80;
+        const availableWidth = (window.innerWidth - sidebarWidth) * 0.8;
         
         // Reset to ensure accurate measurement
         heroTitle.style.fontSize = '10px';
