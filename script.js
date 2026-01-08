@@ -71,9 +71,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const eventsSection = document.querySelector('.events-section');
         
         if (heroSection) {
-            // Scale down hero section as user scrolls (0.5 = 50% collapse rate)
-            const heroScale = Math.max(0, 1 - (scrollY / window.innerHeight) * 0.5);
-            heroSection.style.transform = `scale(${heroScale})`;
+            // Collapse hero section vertically only as user scrolls
+            const heroScale = Math.max(0, 1 - (scrollY / window.innerHeight));
+            heroSection.style.transform = `scaleY(${heroScale})`;
             heroSection.style.transformOrigin = 'top center';
             heroSection.style.opacity = heroScale;
         }
@@ -82,8 +82,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Start collapsing events section after hero is scrolled past
             const eventsStart = window.innerHeight;
             const eventsScrollY = Math.max(0, scrollY - eventsStart);
-            const eventsScale = Math.max(0, 1 - (eventsScrollY / window.innerHeight) * 0.5);
-            eventsSection.style.transform = `scale(${eventsScale})`;
+            const eventsScale = Math.max(0, 1 - (eventsScrollY / window.innerHeight));
+            eventsSection.style.transform = `scaleY(${eventsScale})`;
             eventsSection.style.transformOrigin = 'top center';
         }
     }
