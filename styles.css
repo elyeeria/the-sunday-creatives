@@ -97,6 +97,7 @@ h2, h3, .section-title, .event-title {
     height: 30px;
     object-fit: contain;
     display: block;
+    filter: brightness(0) invert(1);
 }
 
 .nav-text {
