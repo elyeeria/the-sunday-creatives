@@ -19,9 +19,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const viewportHeight = window.innerHeight;
         const availableWidth = viewportWidth * 0.7;
         
-        // Calculate available height: 100vh - 20rem margins - subtitle - button - gaps
+        // Calculate available height: 100vh - 10rem margins - subtitle - button - gaps
         const remInPx = parseFloat(getComputedStyle(document.documentElement).fontSize);
-        const marginSpace = 20 * remInPx; // 10rem top + 10rem bottom
+        const marginSpace = 10 * remInPx; // 5rem top + 5rem bottom
         const subtitleHeight = 1.2 * remInPx * 1.4; // 1.2rem font-size with line-height
         const buttonHeight = 0.8 * remInPx * 2 + 3 * remInPx; // padding + borders/spacing
         const gapSpace = 0.5 * remInPx + 1.5 * remInPx + 1.5 * remInPx; // title gap + subtitle margin + button margin

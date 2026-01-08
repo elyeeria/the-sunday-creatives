@@ -203,10 +203,10 @@ h2, h3, .section-title, .event-title {
     position: relative;
     z-index: 3;
     text-align: center;
-    padding: 10rem 2rem;
+    padding: 5rem 2rem;
     width: 100%;
     max-width: 80vw;
-    max-height: calc(100vh - 20rem);
+    max-height: calc(100vh - 10rem);
     display: flex;
     flex-direction: column;
     justify-content: center;
