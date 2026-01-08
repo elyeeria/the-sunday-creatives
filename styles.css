@@ -69,6 +69,8 @@ h2, h3, .section-title, .event-title {
     padding: 2rem 0;
     transition: width 0.3s ease;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
 }
 
 .navbar::before {
@@ -140,7 +142,6 @@ h2, h3, .section-title, .event-title {
     padding: 0;
     align-items: center;
     width: 100%;
-    justify-content: center;
 }
 
 .nav-link {
@@ -148,7 +149,7 @@ h2, h3, .section-title, .event-title {
     text-decoration: none;
     font-size: 1.25rem;
     font-weight: 500;
-    padding: 0 1.25rem;
+    padding: 0;
     transition: all 0.3s ease;
     opacity: 0.8;
     display: flex;
@@ -156,7 +157,6 @@ h2, h3, .section-title, .event-title {
     justify-content: flex-start;
     gap: 1rem;
     white-space: nowrap;
-    width: auto;
 }
 
 .nav-icon {
