@@ -218,6 +218,7 @@ h2, h3, .section-title, .event-title {
     padding: 2rem;
     width: 100%;
     max-width: 80vw;
+    margin-top: 10vh;
 }
 
 .hero-content:hover .hero-title,
