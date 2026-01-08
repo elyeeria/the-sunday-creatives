@@ -12,12 +12,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Reset to ensure accurate measurement
         heroTitle.style.fontSize = '10px';
         
-        // Binary search for optimal font size
+        // Binary search for optimal font size - scale max size with screen width
         let minSize = 10;
-        let maxSize = 300;
+        let maxSize = window.innerWidth; // Use screen width as max to allow proper scaling
         let fontSize = 10;
         
-        while (maxSize - minSize > 0.5) {
+        while (maxSize - minSize > 1) {
             fontSize = (minSize + maxSize) / 2;
             heroTitle.style.fontSize = fontSize + 'px';
             
@@ -31,8 +31,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Apply the final size with a safety margin to prevent overflow
-        heroTitle.style.fontSize = (minSize * 0.98) + 'px';
+        // Apply the final size with a small safety margin to prevent overflow
+        heroTitle.style.fontSize = (minSize * 0.99) + 'px';
     }
     
     // Call on load with a slight delay to ensure fonts are loaded
