@@ -2,6 +2,36 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     
+    // Dynamic hero title sizing to maintain 5% margins
+    function resizeHeroTitle() {
+        const heroTitle = document.querySelector('.hero-title');
+        if (!heroTitle) return;
+        
+        const availableWidth = window.innerWidth * 0.9; // 90vw (5% margin each side)
+        let fontSize = 200; // Start with large font size
+        
+        // Binary search for optimal font size
+        let minSize = 10;
+        let maxSize = 500;
+        
+        while (maxSize - minSize > 1) {
+            fontSize = (minSize + maxSize) / 2;
+            heroTitle.style.fontSize = fontSize + 'px';
+            
+            if (heroTitle.scrollWidth <= availableWidth) {
+                minSize = fontSize;
+            } else {
+                maxSize = fontSize;
+            }
+        }
+        
+        heroTitle.style.fontSize = minSize + 'px';
+    }
+    
+    // Call on load and resize
+    resizeHeroTitle();
+    window.addEventListener('resize', resizeHeroTitle);
+    
     // Smooth scrolling for navigation links
     const navLinks = document.querySelectorAll('.nav-link');
     
