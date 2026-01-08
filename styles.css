@@ -69,8 +69,6 @@ h2, h3, .section-title, .event-title {
     padding: 2rem 0;
     transition: width 0.3s ease;
     overflow: hidden;
-    display: flex;
-    justify-content: center;
 }
 
 .navbar::before {
@@ -154,7 +152,7 @@ h2, h3, .section-title, .event-title {
     opacity: 0.8;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     gap: 1rem;
     white-space: nowrap;
 }
