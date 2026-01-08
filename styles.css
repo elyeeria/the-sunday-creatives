@@ -64,7 +64,6 @@ h2, h3, .section-title, .event-title {
 
 .navbar:hover {
     width: 250px;
-    background: rgba(255, 255, 255, 0.15);
 }
 
 .nav-container {
