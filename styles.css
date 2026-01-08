@@ -141,10 +141,12 @@ h2, h3, .section-title, .event-title {
     z-index: 3;
     text-align: center;
     padding: 2rem;
+    width: 100%;
+    max-width: 90vw;
 }
 
 .hero-title {
-    font-size: clamp(2rem, 15vw, 40vh);
+    font-size: 20vw;
     font-weight: 400;
     line-height: 1;
     color: white;
@@ -152,7 +154,7 @@ h2, h3, .section-title, .event-title {
     letter-spacing: -0.02em;
     text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     animation: fadeInUp 1s ease-out;
-    max-width: 95%;
+    width: 100%;
     white-space: nowrap;
     text-align: center;
 }
