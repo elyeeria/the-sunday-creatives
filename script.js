@@ -177,70 +177,82 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Add scroll indicator for events gallery
+    // 3D Carousel functionality
     if (eventsGallery) {
-        // Check if gallery is scrollable
-        function checkScrollable() {
-            const isScrollable = eventsGallery.scrollWidth > eventsGallery.clientWidth;
-            if (isScrollable) {
-                eventsGallery.style.cursor = 'grab';
-            }
+        const eventCards = document.querySelectorAll('.event-card');
+        const totalCards = eventCards.length;
+        let currentRotation = 0;
+        const angleIncrement = 360 / totalCards;
+        const radius = 500; // Distance from center
+        
+        // Position cards in 3D circle
+        function positionCards() {
+            eventCards.forEach((card, index) => {
+                const angle = (angleIncrement * index) * Math.PI / 180;
+                const x = Math.sin(angle) * radius;
+                const z = Math.cos(angle) * radius;
+                
+                card.style.transform = `
+                    translateX(${x}px)
+                    translateZ(${z}px)
+                    rotateY(${-angleIncrement * index}deg)
+                `;
+            });
         }
         
-        checkScrollable();
-        window.addEventListener('resize', checkScrollable);
+        // Rotate carousel
+        function rotateCarousel(direction) {
+            currentRotation += direction * angleIncrement;
+            eventsGallery.style.transform = `rotateY(${currentRotation}deg)`;
+        }
         
-        // Drag to scroll functionality
-        let isDown = false;
-        let startX;
-        let scrollLeft;
+        positionCards();
         
-        eventsGallery.addEventListener('mousedown', (e) => {
-            isDown = true;
-            eventsGallery.style.cursor = 'grabbing';
-            startX = e.pageX - eventsGallery.offsetLeft;
-            scrollLeft = eventsGallery.scrollLeft;
+        // Auto-rotate carousel
+        let autoRotateInterval = setInterval(() => {
+            rotateCarousel(1);
+        }, 3000);
+        
+        // Manual navigation on click
+        eventsGallery.addEventListener('click', (e) => {
+            clearInterval(autoRotateInterval);
+            rotateCarousel(1);
+            
+            // Restart auto-rotate after 5 seconds of inactivity
+            autoRotateInterval = setInterval(() => {
+                rotateCarousel(1);
+            }, 3000);
         });
         
-        eventsGallery.addEventListener('mouseleave', () => {
-            isDown = false;
-            eventsGallery.style.cursor = 'grab';
-        });
-        
-        eventsGallery.addEventListener('mouseup', () => {
-            isDown = false;
-            eventsGallery.style.cursor = 'grab';
-        });
-        
-        eventsGallery.addEventListener('mousemove', (e) => {
-            if (!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - eventsGallery.offsetLeft;
-            const walk = (x - startX) * 2;
-            eventsGallery.scrollLeft = scrollLeft - walk;
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                clearInterval(autoRotateInterval);
+                rotateCarousel(-1);
+                autoRotateInterval = setInterval(() => rotateCarousel(1), 3000);
+            } else if (e.key === 'ArrowRight') {
+                clearInterval(autoRotateInterval);
+                rotateCarousel(1);
+                autoRotateInterval = setInterval(() => rotateCarousel(1), 3000);
+            }
         });
     }
     
-    // Animate elements on scroll
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -100px 0px'
-    };
-    
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, observerOptions);
-    
-    // Observe event cards for animation
-    const eventCards = document.querySelectorAll('.event-card');
-    eventCards.forEach((card, index) => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(30px)';
-        card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
-        observer.observe(card);
-    });
+    // Animate section title
+    const sectionTitle = document.querySelector('.section-title');
+    if (sectionTitle) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        sectionTitle.style.opacity = '0';
+        sectionTitle.style.transform = 'translateY(30px)';
+        sectionTitle.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(sectionTitle);
+    }
 });

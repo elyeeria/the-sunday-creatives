@@ -330,6 +330,10 @@ h2, h3, .section-title, .event-title {
     margin: 0 auto;
     position: relative;
     z-index: 3;
+    perspective: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .section-title {
@@ -342,53 +346,41 @@ h2, h3, .section-title, .event-title {
 }
 
 .events-gallery {
-    display: flex;
-    gap: 2rem;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding: 2rem 0;
-    scroll-behavior: smooth;
-}
-
-/* Custom scrollbar */
-.events-gallery::-webkit-scrollbar {
-    height: 10px;
-}
-
-.events-gallery::-webkit-scrollbar-track {
-    background: rgba(255, 180, 50, 0.1);
-    border-radius: 10px;
-}
-
-.events-gallery::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, rgba(255, 180, 50, 0.7), rgba(255, 200, 80, 0.8));
-    border-radius: 10px;
-}
-
-.events-gallery::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, rgba(255, 180, 50, 0.9), rgba(255, 200, 80, 1));
+    position: relative;
+    width: 400px;
+    height: 500px;
+    transform-style: preserve-3d;
+    transition: transform 1s ease;
+    margin: 4rem auto;
 }
 
 .event-card {
-    flex: 0 0 350px;
-    scroll-snap-align: center;
-    background: white;
+    position: absolute;
+    width: 350px;
+    height: 450px;
+    left: 50%;
+    top: 50%;
+    margin-left: -175px;
+    margin-top: -225px;
+    background: rgba(255, 255, 255, 0.95);
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    transition: all 0.5s ease;
     text-decoration: none;
     color: inherit;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
 }
 
 .event-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    z-index: 100;
 }
 
 .event-image-wrapper {
     width: 100%;
-    height: 250px;
+    height: 300px;
     overflow: hidden;
     position: relative;
 }
