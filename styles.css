@@ -273,7 +273,7 @@ h2, h3, .section-title, .event-title {
     padding: 4rem 2rem;
     background: #f9f9f9;
     min-height: 100vh;
-    margin-left: 80px;
+    margin-left: calc(80px + 1rem);
 }
 
 .events-container {
