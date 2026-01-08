@@ -230,7 +230,7 @@ h2, h3, .section-title, .event-title {
     animation: fadeInUp 1s ease-out;
     width: 100%;
     text-align: center;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition: transform 0.3s ease, opacity 0.8s ease;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -238,7 +238,7 @@ h2, h3, .section-title, .event-title {
 }
 
 .hero-title:hover {
-    opacity: 0.5;
+    opacity: 0.1;
 }
 
 .title-line-1,
