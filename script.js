@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Get the actual available viewport width (minus sidebar and extra spacing)
         const viewportWidth = window.innerWidth - 180; // 80px sidebar + 100px extra spacing
         
-        // Use 80% of viewport for the title (10% margin each side)
-        const availableWidth = viewportWidth * 0.8;
+        // Use 70% of viewport for the title (15% margin each side for better spacing)
+        const availableWidth = viewportWidth * 0.7;
         
         // Reset to minimum to get accurate measurements
         heroTitle.style.fontSize = '1px';
