@@ -234,7 +234,7 @@ h2, h3, .section-title, .event-title {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0;
+    gap: 1rem;
 }
 
 .title-line-1,
