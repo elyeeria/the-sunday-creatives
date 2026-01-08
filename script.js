@@ -63,6 +63,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Shift hero title when navbar expands
+    const navbar = document.querySelector('.navbar');
+    const heroTitle = document.querySelector('.hero-title');
+    
+    if (navbar && heroTitle) {
+        navbar.addEventListener('mouseenter', function() {
+            heroTitle.style.transform = 'translateX(85px)'; // (250px - 80px) / 2 = 85px
+        });
+        
+        navbar.addEventListener('mouseleave', function() {
+            heroTitle.style.transform = 'translateX(0)';
+        });
+    }
+    
     // Smooth scrolling for navigation links
     const navLinks = document.querySelectorAll('.nav-link');
     
