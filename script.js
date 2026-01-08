@@ -39,27 +39,27 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (viewportWidth <= 360) {
             marginSpace = 3 * remInPx; // 1.5rem top + 1.5rem bottom
-            subtitleSize = 1.0 * remInPx * 1.4;
+            subtitleSize = 2.0 * remInPx * 1.4;
             buttonPadding = 0.4 * remInPx * 2;
             gapSpacing = 0.2 * remInPx + 0.8 * remInPx + 0.8 * remInPx;
         } else if (viewportWidth <= 480) {
             marginSpace = 4 * remInPx; // 2rem top + 2rem bottom
-            subtitleSize = 1.1 * remInPx * 1.4;
+            subtitleSize = 2.1 * remInPx * 1.4;
             buttonPadding = 0.5 * remInPx * 2;
             gapSpacing = 0.2 * remInPx + 0.8 * remInPx + 0.8 * remInPx;
         } else if (viewportWidth <= 768) {
             marginSpace = 6 * remInPx; // 3rem top + 3rem bottom
-            subtitleSize = 1.2 * remInPx * 1.4;
+            subtitleSize = 2.2 * remInPx * 1.4;
             buttonPadding = 0.6 * remInPx * 2;
             gapSpacing = 0.3 * remInPx + 1.0 * remInPx + 1.0 * remInPx;
         } else if (viewportWidth <= 1024) {
             marginSpace = 8 * remInPx; // 4rem top + 4rem bottom
-            subtitleSize = 1.3 * remInPx * 1.4;
+            subtitleSize = 2.3 * remInPx * 1.4;
             buttonPadding = 0.7 * remInPx * 2;
             gapSpacing = 0.5 * remInPx + 1.2 * remInPx + 1.2 * remInPx;
         } else {
             marginSpace = 10 * remInPx; // 5rem top + 5rem bottom
-            subtitleSize = 1.5 * remInPx * 1.4;
+            subtitleSize = 2.5 * remInPx * 1.4;
             buttonPadding = 0.8 * remInPx * 2;
             gapSpacing = 0.5 * remInPx + 1.5 * remInPx + 1.5 * remInPx;
         }
