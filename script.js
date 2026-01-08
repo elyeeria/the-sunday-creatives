@@ -118,8 +118,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Parallax scroll effect - fade to black as user scrolls
+    // Parallax scroll effect - collapse hero content as user scrolls
     let scrollThrottle;
+    const heroContent = document.querySelector('.hero-content');
+    
     function handleScrollCollapse() {
         if (scrollThrottle) return;
         scrollThrottle = setTimeout(() => {
@@ -128,29 +130,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const scrollY = window.scrollY;
         
-        if (heroSection) {
-            // Fade to black over hero section as user scrolls
+        if (heroContent) {
+            // Fade out hero content as user scrolls
             const collapseDistance = window.innerHeight * 0.5; // Fade over half viewport
-            const fadeProgress = Math.min(1, scrollY / collapseDistance);
-            
-            // Find or create overlay element
-            let overlay = heroSection.querySelector('.hero-overlay');
-            if (overlay) {
-                overlay.style.backgroundColor = `rgba(0, 0, 0, ${fadeProgress})`;
-            }
-            
-            // Also reduce content opacity slightly for smoother transition
             const contentOpacity = Math.max(0, 1 - (scrollY / collapseDistance));
-            heroSection.style.pointerEvents = contentOpacity === 0 ? 'none' : 'auto';
-        }
-        
-        if (eventsSection) {
-            // Start fading events section after hero is scrolled past
-            const eventsStart = window.innerHeight;
-            const eventsScrollY = Math.max(0, scrollY - eventsStart);
-            const collapseDistance = window.innerHeight * 0.5; // Collapse over half viewport
-            const eventsOpacity = Math.max(0, 1 - (eventsScrollY / collapseDistance));
-            eventsSection.style.opacity = eventsOpacity;
+            heroContent.style.opacity = contentOpacity;
+            heroContent.style.pointerEvents = contentOpacity === 0 ? 'none' : 'auto';
         }
     }
     

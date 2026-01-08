@@ -162,15 +162,16 @@ h2, h3, .section-title, .event-title {
 
 /* Hero Section */
 .hero-section {
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
     height: 100vh;
     width: 100%;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    will-change: opacity;
-    transition: opacity 0.1s linear;
+    z-index: 0;
 }
 
 .hero-background {
@@ -196,13 +197,15 @@ h2, h3, .section-title, .event-title {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0);
-    z-index: 4;
-    transition: background-color 0.1s linear;
+    z-index: 2;
     pointer-events: none;
 }
 
 .hero-content {
-    position: relative;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 3;
     text-align: center;
     padding: 5rem 2rem;
@@ -214,6 +217,7 @@ h2, h3, .section-title, .event-title {
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    transition: opacity 0.1s linear;
 }
 
 .hero-content:hover .hero-title,
@@ -312,6 +316,7 @@ h2, h3, .section-title, .event-title {
 /* Events Section */
 .events-section {
     padding: 4rem 2rem;
+    margin-top: 100vh;
     background: 
         radial-gradient(circle at top left, rgba(255, 220, 0, 0.55) 0%, rgba(255, 140, 0, 0.4) 25%, rgba(200, 80, 0, 0.25) 45%, transparent 70%),
         radial-gradient(circle at bottom right, rgba(255, 200, 0, 0.5) 0%, rgba(255, 120, 0, 0.35) 25%, rgba(220, 90, 0, 0.2) 45%, transparent 70%),
@@ -321,9 +326,8 @@ h2, h3, .section-title, .event-title {
     min-height: 100vh;
     margin-left: 0;
     padding-left: calc(80px + 3rem);
-    transition: opacity 0.1s linear;
     position: relative;
-    z-index: 1;
+    z-index: 10;
 }
 
 .events-container {
