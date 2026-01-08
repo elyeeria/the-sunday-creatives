@@ -100,20 +100,20 @@ h2, h3, .section-title, .event-title {
 .navbar:hover {
     width: 250px;
     background: linear-gradient(135deg, 
-        rgba(40, 40, 50, 0.75) 0%,
-        rgba(50, 40, 50, 0.73) 15%,
-        rgba(40, 45, 60, 0.73) 30%,
-        rgba(40, 55, 60, 0.73) 45%,
-        rgba(45, 55, 50, 0.73) 60%,
-        rgba(60, 55, 40, 0.73) 75%,
-        rgba(60, 45, 40, 0.73) 90%,
-        rgba(50, 40, 50, 0.75) 100%);
+        rgba(40, 40, 50, 0.45) 0%,
+        rgba(50, 40, 50, 0.43) 15%,
+        rgba(40, 45, 60, 0.43) 30%,
+        rgba(40, 55, 60, 0.43) 45%,
+        rgba(45, 55, 50, 0.43) 60%,
+        rgba(60, 55, 40, 0.43) 75%,
+        rgba(60, 45, 40, 0.43) 90%,
+        rgba(50, 40, 50, 0.45) 100%);
     box-shadow: 
-        0 8px 32px 0 rgba(0, 0, 0, 0.4),
-        0 2px 12px 0 rgba(255, 255, 255, 0.15),
-        inset 0 2px 6px 0 rgba(255, 255, 255, 0.2),
-        inset 0 -2px 6px 0 rgba(255, 255, 255, 0.1),
-        inset 1px 0 0 0 rgba(255, 255, 255, 0.15);
+        0 8px 32px 0 rgba(0, 0, 0, 0.3),
+        0 2px 12px 0 rgba(255, 255, 255, 0.1),
+        inset 0 2px 6px 0 rgba(255, 255, 255, 0.15),
+        inset 0 -2px 6px 0 rgba(255, 255, 255, 0.08),
+        inset 1px 0 0 0 rgba(255, 255, 255, 0.12);
 }
 
 .navbar:hover::before,
@@ -134,7 +134,7 @@ h2, h3, .section-title, .event-title {
     text-decoration: none;
     font-size: 1.25rem;
     font-weight: 500;
-    padding: 0 0 0 1.5rem;
+    padding: 0 0.5rem 0 1.5rem;
     transition: all 0.3s ease;
     opacity: 0.8;
     display: flex;
