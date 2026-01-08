@@ -46,7 +46,7 @@ h2, h3, .section-title, .event-title {
 .navbar {
     position: fixed;
     top: 10vh;
-    left: 0;
+    left: 1rem;
     height: auto;
     width: 80px;
     background: linear-gradient(135deg, 
