@@ -7,8 +7,105 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>The Sunday Creatives</h1>
-    <p>Your creative journey starts here.</p>
+    <!-- Expandable Navigation Menu -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#home" class="nav-link">Home</a>
+            <a href="#events" class="nav-link">Events</a>
+            <a href="archive.html" class="nav-link">Archive</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Section 1: Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="hero-background">
+            <!-- Replace with your image or video -->
+            <img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?q=80&w=2071" alt="Hero Background" class="hero-image">
+            <!-- Alternative: Use video -->
+            <!-- <video class="hero-video" autoplay muted loop playsinline>
+                <source src="your-video.mp4" type="video/mp4">
+            </video> -->
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">The Sunday Creatives</h1>
+        </div>
+    </section>
+
+    <!-- Section 2: Events Gallery -->
+    <section id="events" class="events-section">
+        <div class="events-container">
+            <h2 class="section-title">Upcoming Events</h2>
+            <div class="events-gallery">
+                <!-- Event 1 -->
+                <a href="events/event1.html" class="event-card">
+                    <div class="event-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070" alt="Creative Workshop">
+                    </div>
+                    <div class="event-info">
+                        <h3 class="event-title">Creative Workshop</h3>
+                        <p class="event-date">January 15, 2026</p>
+                    </div>
+                </a>
+
+                <!-- Event 2 -->
+                <a href="events/event2.html" class="event-card">
+                    <div class="event-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?q=80&w=2012" alt="Design Meetup">
+                    </div>
+                    <div class="event-info">
+                        <h3 class="event-title">Design Meetup</h3>
+                        <p class="event-date">January 22, 2026</p>
+                    </div>
+                </a>
+
+                <!-- Event 3 -->
+                <a href="events/event3.html" class="event-card">
+                    <div class="event-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=2069" alt="Sunday Sessions">
+                    </div>
+                    <div class="event-info">
+                        <h3 class="event-title">Sunday Sessions</h3>
+                        <p class="event-date">January 28, 2026</p>
+                    </div>
+                </a>
+
+                <!-- Event 4 -->
+                <a href="events/event4.html" class="event-card">
+                    <div class="event-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?q=80&w=2070" alt="Art Exhibition">
+                    </div>
+                    <div class="event-info">
+                        <h3 class="event-title">Art Exhibition</h3>
+                        <p class="event-date">February 5, 2026</p>
+                    </div>
+                </a>
+
+                <!-- Event 5 -->
+                <a href="events/event5.html" class="event-card">
+                    <div class="event-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070" alt="Networking Night">
+                    </div>
+                    <div class="event-info">
+                        <h3 class="event-title">Networking Night</h3>
+                        <p class="event-date">February 12, 2026</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p class="footer-text">Want to stay updated?</p>
+            <a href="https://calendar.google.com/calendar" target="_blank" class="calendar-link">
+                📅 Add Events to Your Calendar
+            </a>
+            <p class="footer-copyright">&copy; 2026 The Sunday Creatives. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script src="script.js"></script>
 </body>
