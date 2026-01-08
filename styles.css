@@ -514,6 +514,7 @@ h2, h3, .section-title, .event-title {
     
     .events-section {
         padding: 4rem 1.5rem;
+        padding-left: calc(80px + 2.5rem);
     }
     
     .section-title {
@@ -564,6 +565,7 @@ h2, h3, .section-title, .event-title {
     
     .events-section {
         padding: 3rem 1rem;
+        padding-left: calc(60px + 2rem);
     }
     
     .section-title {
@@ -641,8 +643,8 @@ h2, h3, .section-title, .event-title {
     }
     
     .events-section {
-        margin-left: calc(50px + 0.5rem);
         padding: 2.5rem 0.75rem;
+        padding-left: calc(50px + 1.5rem);
     }
     
     .section-title {
@@ -708,7 +710,7 @@ h2, h3, .section-title, .event-title {
     }
     
     .events-section {
-        margin-left: calc(45px + 0.25rem);
+        padding-left: calc(45px + 1.25rem);
     }
     
     .event-card {
