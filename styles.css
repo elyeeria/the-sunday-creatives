@@ -165,7 +165,7 @@ h2, h3, .section-title, .event-title {
     position: relative;
     height: 100vh;
     width: 100%;
-    overflow: hidden;
+    overflow: visible;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -179,14 +179,15 @@ h2, h3, .section-title, .event-title {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 30vh;
+    height: 35vh;
     background: linear-gradient(to bottom, 
         transparent 0%, 
-        rgba(0, 0, 0, 0.3) 40%,
-        rgba(0, 0, 0, 0.7) 70%,
-        rgba(0, 0, 0, 0.95) 100%);
+        rgba(0, 0, 0, 0.2) 30%,
+        rgba(0, 0, 0, 0.6) 60%,
+        rgba(5, 5, 8, 0.9) 85%,
+        rgba(0, 0, 0, 0.98) 100%);
     pointer-events: none;
-    z-index: 2;
+    z-index: 3;
 }
 
 .hero-background {
@@ -212,7 +213,7 @@ h2, h3, .section-title, .event-title {
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0);
-    z-index: 2;
+    z-index: 4;
     transition: background-color 0.1s linear;
     pointer-events: none;
 }
@@ -328,24 +329,25 @@ h2, h3, .section-title, .event-title {
 /* Events Section */
 .events-section {
     padding: 4rem 2rem;
-    margin-top: -20vh;
-    padding-top: 24vh;
+    margin-top: -25vh;
+    padding-top: 28vh;
     background: 
         radial-gradient(circle at top left, rgba(255, 220, 0, 0.55) 0%, rgba(255, 140, 0, 0.4) 25%, rgba(200, 80, 0, 0.25) 45%, transparent 70%),
         radial-gradient(circle at bottom right, rgba(255, 200, 0, 0.5) 0%, rgba(255, 120, 0, 0.35) 25%, rgba(220, 90, 0, 0.2) 45%, transparent 70%),
         linear-gradient(to bottom,
             transparent 0%,
-            rgba(0, 0, 0, 0.5) 10%,
-            rgba(0, 0, 0, 0.85) 20%,
-            rgba(5, 5, 8, 0.98) 40%,
-            rgba(0, 0, 0, 0.95) 100%);
+            rgba(0, 0, 0, 0.4) 8%,
+            rgba(0, 0, 0, 0.75) 15%,
+            rgba(5, 5, 8, 0.95) 25%,
+            rgba(0, 0, 0, 0.98) 100%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    min-height: 100vh;
+    min-height: calc(100vh + 25vh);
     margin-left: 0;
     padding-left: calc(80px + 3rem);
     transition: opacity 0.1s linear;
     position: relative;
+    z-index: 1;
 }
 
 .events-section::before {
@@ -360,7 +362,7 @@ h2, h3, .section-title, .event-title {
         repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255, 255, 255, 0.08) 2px, rgba(255, 255, 255, 0.08) 4px);
     opacity: 1;
     pointer-events: none;
-    z-index: 1;
+    z-index: 2;
 }
 
 .events-section::after {
@@ -378,7 +380,7 @@ h2, h3, .section-title, .event-title {
         url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='3.5' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
     opacity: 0.4;
     pointer-events: none;
-    z-index: 1;
+    z-index: 2;
     mix-blend-mode: overlay;
 }
 
@@ -386,7 +388,7 @@ h2, h3, .section-title, .event-title {
     max-width: 1400px;
     margin: 0 auto;
     position: relative;
-    z-index: 2;
+    z-index: 3;
 }
 
 .section-title {
