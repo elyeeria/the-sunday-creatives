@@ -8,29 +8,41 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!heroTitle) return;
         
         const availableWidth = window.innerWidth * 0.9; // 90vw (5% margin each side)
-        let fontSize = 200; // Start with large font size
+        
+        // Reset to ensure accurate measurement
+        heroTitle.style.fontSize = '10px';
         
         // Binary search for optimal font size
         let minSize = 10;
         let maxSize = 500;
+        let fontSize = 10;
         
-        while (maxSize - minSize > 1) {
+        while (maxSize - minSize > 0.5) {
             fontSize = (minSize + maxSize) / 2;
             heroTitle.style.fontSize = fontSize + 'px';
             
-            if (heroTitle.scrollWidth <= availableWidth) {
+            // Force reflow to get accurate width
+            const textWidth = heroTitle.scrollWidth;
+            
+            if (textWidth <= availableWidth) {
                 minSize = fontSize;
             } else {
                 maxSize = fontSize;
             }
         }
         
-        heroTitle.style.fontSize = minSize + 'px';
+        // Apply the final size with a small safety margin
+        heroTitle.style.fontSize = (minSize * 0.98) + 'px';
     }
     
-    // Call on load and resize
-    resizeHeroTitle();
+    // Call on load with a slight delay to ensure fonts are loaded
+    setTimeout(resizeHeroTitle, 100);
     window.addEventListener('resize', resizeHeroTitle);
+    
+    // Re-run when fonts are fully loaded
+    if (document.fonts) {
+        document.fonts.ready.then(resizeHeroTitle);
+    }
     
     // Smooth scrolling for navigation links
     const navLinks = document.querySelectorAll('.nav-link');
