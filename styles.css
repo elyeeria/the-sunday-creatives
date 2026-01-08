@@ -50,14 +50,14 @@ h2, h3, .section-title, .event-title {
     height: auto;
     width: 80px;
     background: linear-gradient(135deg, 
-        rgba(0, 0, 0, 0.25) 0%,
-        rgba(40, 20, 40, 0.23) 15%,
-        rgba(20, 35, 50, 0.23) 30%,
-        rgba(20, 50, 50, 0.23) 45%,
-        rgba(35, 50, 35, 0.23) 60%,
-        rgba(50, 50, 20, 0.23) 75%,
-        rgba(50, 35, 20, 0.23) 90%,
-        rgba(0, 0, 0, 0.25) 100%);
+        rgba(255, 255, 255, 0.15) 0%,
+        rgba(255, 240, 255, 0.14) 15%,
+        rgba(240, 245, 255, 0.14) 30%,
+        rgba(240, 255, 255, 0.14) 45%,
+        rgba(245, 255, 245, 0.14) 60%,
+        rgba(255, 255, 240, 0.14) 75%,
+        rgba(255, 245, 240, 0.14) 90%,
+        rgba(255, 255, 255, 0.15) 100%);
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
     box-shadow: 
