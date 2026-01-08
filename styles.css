@@ -50,14 +50,14 @@ h2, h3, .section-title, .event-title {
     height: auto;
     width: 80px;
     background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.15) 0%,
-        rgba(255, 240, 255, 0.14) 15%,
-        rgba(240, 245, 255, 0.14) 30%,
-        rgba(240, 255, 255, 0.14) 45%,
-        rgba(245, 255, 245, 0.14) 60%,
-        rgba(255, 255, 240, 0.14) 75%,
-        rgba(255, 245, 240, 0.14) 90%,
-        rgba(255, 255, 255, 0.15) 100%);
+        rgba(255, 255, 255, 0.08) 0%,
+        rgba(255, 240, 255, 0.07) 15%,
+        rgba(240, 245, 255, 0.07) 30%,
+        rgba(240, 255, 255, 0.07) 45%,
+        rgba(245, 255, 245, 0.07) 60%,
+        rgba(255, 255, 240, 0.07) 75%,
+        rgba(255, 245, 240, 0.07) 90%,
+        rgba(255, 255, 255, 0.08) 100%);
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
     box-shadow: 
@@ -65,7 +65,7 @@ h2, h3, .section-title, .event-title {
         0 2px 12px 0 rgba(255, 255, 255, 0.2),
         inset 0 2px 6px 0 rgba(255, 255, 255, 0.6),
         inset 0 -2px 6px 0 rgba(255, 255, 255, 0.3),
-        inset 1px 0 0 0 rgba(255, 255, 255, 0.5);
+        inset 1px 0 0 0 rgba(255, 255, 255, 0.3);
     z-index: 1000;
     padding: 2rem 0;
     transition: width 0.3s ease;
@@ -80,9 +80,9 @@ h2, h3, .section-title, .event-title {
     right: 0;
     height: 50%;
     background: linear-gradient(180deg, 
-        rgba(255, 255, 255, 0.3) 0%,
-        rgba(255, 245, 255, 0.12) 30%,
-        rgba(245, 255, 255, 0.12) 60%,
+        rgba(255, 255, 255, 0.2) 0%,
+        rgba(255, 245, 255, 0.08) 30%,
+        rgba(245, 255, 255, 0.08) 60%,
         rgba(255, 255, 255, 0) 100%);
     border-top-right-radius: 20px;
     pointer-events: none;
@@ -97,11 +97,11 @@ h2, h3, .section-title, .event-title {
     width: 1px;
     background: linear-gradient(
         180deg,
-        rgba(255, 255, 255, 0.6) 0%,
-        rgba(255, 255, 255, 0.3) 25%,
-        rgba(255, 255, 255, 0.25) 50%,
-        rgba(255, 255, 255, 0.35) 75%,
-        rgba(255, 255, 255, 0.5) 100%
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0.2) 25%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0.25) 75%,
+        rgba(255, 255, 255, 0.35) 100%
     );
     pointer-events: none;
 }
