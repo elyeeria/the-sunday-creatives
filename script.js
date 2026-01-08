@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const heroTitle = document.querySelector('.hero-title');
         if (!heroTitle) return;
         
-        const availableWidth = window.innerWidth * 0.5; // 50vw (5% margin each side)
+        const availableWidth = window.innerWidth * 0.9; // 90vw (5% margin each side)
         
         // Reset to ensure accurate measurement
         heroTitle.style.fontSize = '10px';
