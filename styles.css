@@ -95,7 +95,7 @@ h2, h3, .section-title, .event-title {
 }
 
 .navbar:hover {
-    width: 250px;
+    width: 180px;
     background: linear-gradient(135deg, 
         rgba(20, 25, 35, 0.55) 0%,
         rgba(30, 25, 35, 0.52) 20%,

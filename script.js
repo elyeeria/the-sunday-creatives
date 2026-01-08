@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (navbar && heroTitle) {
         navbar.addEventListener('mouseenter', function() {
-            heroTitle.style.transform = 'translateX(85px)'; // (250px - 80px) / 2 = 85px
+            heroTitle.style.transform = 'translateX(50px)'; // (180px - 80px) / 2 = 50px
         });
         
         navbar.addEventListener('mouseleave', function() {
