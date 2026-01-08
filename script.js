@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Parallax scroll effect - fade out sections as user scrolls
+    // Parallax scroll effect - fade to black as user scrolls
     let scrollThrottle;
     function handleScrollCollapse() {
         if (scrollThrottle) return;
@@ -129,11 +129,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const scrollY = window.scrollY;
         
         if (heroSection) {
-            // Fade out hero section as user scrolls (collapses by 50vh instead of 100vh)
-            const collapseDistance = window.innerHeight * 0.5; // Collapse over half viewport
-            const heroOpacity = Math.max(0, 1 - (scrollY / collapseDistance));
-            heroSection.style.opacity = heroOpacity;
-            heroSection.style.pointerEvents = heroOpacity === 0 ? 'none' : 'auto';
+            // Fade to black over hero section as user scrolls
+            const collapseDistance = window.innerHeight * 0.5; // Fade over half viewport
+            const fadeProgress = Math.min(1, scrollY / collapseDistance);
+            
+            // Find or create overlay element
+            let overlay = heroSection.querySelector('.hero-overlay');
+            if (overlay) {
+                overlay.style.backgroundColor = `rgba(0, 0, 0, ${fadeProgress})`;
+            }
+            
+            // Also reduce content opacity slightly for smoother transition
+            const contentOpacity = Math.max(0, 1 - (scrollY / collapseDistance));
+            heroSection.style.pointerEvents = contentOpacity === 0 ? 'none' : 'auto';
         }
         
         if (eventsSection) {
