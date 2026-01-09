@@ -1,5 +1,25 @@
 // The Sunday Creatives - Landing Page JavaScript
 
+// Utility functions
+const throttle = (func, limit) => {
+    let inThrottle;
+    return function(...args) {
+        if (!inThrottle) {
+            func.apply(this, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
+        }
+    };
+};
+
+const debounce = (func, delay) => {
+    let timeoutId;
+    return function(...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => func.apply(this, args), delay);
+    };
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     
     // Cache DOM elements
