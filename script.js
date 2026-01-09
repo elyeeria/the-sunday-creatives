@@ -246,12 +246,13 @@ document.addEventListener('DOMContentLoaded', function() {
             positionCards();
             
             setTimeout(() => {
-                // Reset position if we've gone past the original set
-                if (currentPosition >= totalCards * 2) {
+                // Reset position if we've cycled through all cards
+                if (currentPosition > totalCards * 2 - 1) {
                     currentPosition = totalCards;
                     positionCards(true);
-                    // Force reflow
-                    void allCards[0].offsetHeight;
+                    setTimeout(() => {
+                        allCards.forEach(card => card.style.transition = 'all 0.5s ease');
+                    }, 50);
                 }
                 isTransitioning = false;
             }, 500);
@@ -265,12 +266,13 @@ document.addEventListener('DOMContentLoaded', function() {
             positionCards();
             
             setTimeout(() => {
-                // Reset position if we've gone before the original set
+                // Reset position if we've gone before the clones
                 if (currentPosition < totalCards) {
                     currentPosition = totalCards * 2 - 1;
                     positionCards(true);
-                    // Force reflow
-                    void allCards[0].offsetHeight;
+                    setTimeout(() => {
+                        allCards.forEach(card => card.style.transition = 'all 0.5s ease');
+                    }, 50);
                 }
                 isTransitioning = false;
             }, 500);
