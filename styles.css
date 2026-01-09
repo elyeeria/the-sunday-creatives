@@ -356,9 +356,11 @@ h2, h3, .event-title {
 }
 
 .events-container {
-    max-width: 100%;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     width: 100%;
-    position: relative;
+    max-width: 100vw;
     z-index: 3;
     display: flex;
     flex-direction: column;
