@@ -151,8 +151,8 @@ body {
 /* Page Title */
 .page-title {
     position: fixed;
-    top: 8vh;
-    left: calc(50% + 50px);
+    top: 5vh;
+    left: 50%;
     transform: translateX(-50%);
     font-family: "Loved by the King", cursive;
     font-size: 4rem;
@@ -163,6 +163,12 @@ body {
     z-index: 1000;
     text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
     margin-bottom: 3rem;
+    transition: transform 0.3s ease;
+    will-change: transform;
+}
+
+.navbar:hover ~ .page-title {
+    transform: translateX(calc(-50% + 50px));
 }
 
 /* Navigation Arrows */
@@ -192,6 +198,11 @@ body {
 }
 
 .nav-arrow-left {
+    left: 2rem;
+    transition: left 0.3s ease;
+}
+
+.navbar:hover ~ .nav-arrow-left {
     left: calc(180px + 2rem);
 }
 
@@ -202,13 +213,19 @@ body {
 /* Stacked Cards Container */
 .cards-stack {
     position: fixed;
-    top: calc(50% + 2rem);
-    left: calc(50% + 50px);
+    top: calc(50% + 5vh);
+    left: 50%;
     transform: translate(-50%, -50%);
-    width: calc(85vw - 180px);
-    max-width: 1100px;
+    width: 90vw;
+    max-width: 1200px;
     height: 75vh;
     perspective: 1500px;
+    transition: transform 0.3s ease;
+    will-change: transform;
+}
+
+.navbar:hover ~ .cards-stack {
+    transform: translate(calc(-50% + 50px), -50%);
 }
 
 /* Event Card Full */
