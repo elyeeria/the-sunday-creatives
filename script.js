@@ -183,8 +183,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const totalCards = eventCards.length;
         let currentIndex = 0;
         const padding = 200; // Side cards offset
+        let isTransitioning = false;
         
-        function positionCards() {
+        function positionCards(instant = false) {
             eventCards.forEach((card, index) => {
                 const offset = index - currentIndex;
                 const absOffset = Math.abs(offset);
@@ -194,6 +195,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 let translateZ = -absOffset * padding;
                 let scale = 1 - (absOffset * 0.2);
                 let opacity = absOffset <= 2 ? 1 - (absOffset * 0.3) : 0;
+                
+                // Disable transition for instant positioning
+                if (instant) {
+                    card.style.transition = 'none';
+                } else {
+                    card.style.transition = 'all 0.5s ease';
+                }
                 
                 // Center card is at z=0, side cards go back
                 card.style.transform = `
@@ -214,17 +222,38 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         function nextCard() {
+            if (isTransitioning) return;
+            isTransitioning = true;
+            
             currentIndex = (currentIndex + 1) % totalCards;
             positionCards();
+            
+            setTimeout(() => {
+                isTransitioning = false;
+            }, 500);
         }
         
         function prevCard() {
+            if (isTransitioning) return;
+            isTransitioning = true;
+            
             currentIndex = (currentIndex - 1 + totalCards) % totalCards;
             positionCards();
+            
+            setTimeout(() => {
+                isTransitioning = false;
+            }, 500);
         }
         
         // Initial positioning
-        positionCards();
+        positionCards(true);
+        
+        // Force reflow to ensure instant positioning takes effect
+        setTimeout(() => {
+            eventCards.forEach(card => {
+                card.style.transition = 'all 0.5s ease';
+            });
+        }, 50);
         
         // Auto-rotate carousel
         let autoRotateInterval = setInterval(nextCard, 4000);
