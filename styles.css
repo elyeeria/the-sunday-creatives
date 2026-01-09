@@ -24,8 +24,14 @@ h1, .hero-title {
     font-style: normal;
 }
 
-h2, h3, .section-title, .event-title {
+h2, h3, .event-title {
     font-family: "Gotu", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.section-title {
+    font-family: "Loved by the King", cursive;
     font-weight: 400;
     font-style: normal;
 }
@@ -302,6 +308,26 @@ h2, h3, .section-title, .event-title {
 .instagram-icon {
     width: 20px;
     height: 20px;
+}
+
+.scroll-arrow {
+    margin-top: 3rem;
+    opacity: 0.1;
+    transition: opacity 0.3s ease;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.scroll-arrow path {
+    animation: arrowBounce 2s ease-in-out infinite;
+}
+
+@keyframes arrowBounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(10px);
+    }
 }
 
 @keyframes fadeInUp {
