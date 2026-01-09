@@ -344,10 +344,10 @@ h2, h3, .event-title {
 
 /* Events Section */
 .events-section {
-    padding: 4rem 0 0.5rem 0;
+    padding: 4rem 0 1rem 0;
     margin-top: 100vh;
     background: transparent;
-    min-height: 100vh;
+    min-height: auto;
     position: relative;
     z-index: 10;
     display: flex;
@@ -381,7 +381,7 @@ h2, h3, .event-title {
 .events-gallery {
     height: 600px;
     perspective: 500px;
-    margin: 4rem auto;
+    margin: 0 auto 1rem auto;
     position: relative;
     display: flex;
     justify-content: center;
