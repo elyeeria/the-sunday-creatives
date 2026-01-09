@@ -117,8 +117,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Apply final size with safety margin
         const finalSize = Math.floor(minSize * 0.95);
         heroTitle.style.fontSize = finalSize + 'px';
-        
-        console.log('Title resized:', finalSize + 'px', 'Available width:', availableWidth + 'px');
     }
     
     // Call on load with delay for fonts
@@ -300,28 +298,32 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }, 50);
         
-        // Auto-rotate carousel
+        // Auto-rotate carousel with cleanup
         let autoRotateInterval = setInterval(nextCard, 4000);
         
-        // Click to advance
+        // Click to advance with debounce
+        let clickTimeout;
         eventsGallery.addEventListener('click', (e) => {
             if (!e.target.closest('.event-card')) {
-                clearInterval(autoRotateInterval);
-                nextCard();
-                autoRotateInterval = setInterval(nextCard, 4000);
+                clearTimeout(clickTimeout);
+                clickTimeout = setTimeout(() => {
+                    clearInterval(autoRotateInterval);
+                    nextCard();
+                    autoRotateInterval = setInterval(nextCard, 4000);
+                }, 100);
             }
         });
         
-        // Keyboard navigation
+        // Keyboard navigation with debounce
+        let keyTimeout;
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') {
-                clearInterval(autoRotateInterval);
-                prevCard();
-                autoRotateInterval = setInterval(nextCard, 4000);
-            } else if (e.key === 'ArrowRight') {
-                clearInterval(autoRotateInterval);
-                nextCard();
-                autoRotateInterval = setInterval(nextCard, 4000);
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                clearTimeout(keyTimeout);
+                keyTimeout = setTimeout(() => {
+                    clearInterval(autoRotateInterval);
+                    e.key === 'ArrowLeft' ? prevCard() : nextCard();
+                    autoRotateInterval = setInterval(nextCard, 4000);
+                }, 100);
             }
         });
     }
@@ -334,6 +336,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (entry.isIntersecting) {
                     entry.target.style.opacity = '1';
                     entry.target.style.transform = 'translateY(0)';
+                    observer.unobserve(entry.target);
                 }
             });
         }, { threshold: 0.1 });
