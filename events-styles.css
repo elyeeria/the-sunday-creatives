@@ -168,7 +168,7 @@ body {
 }
 
 .navbar:hover ~ .page-title {
-    transform: translateX(calc(-50% + 50px));
+    transform: translateX(calc(-50% + 125px));
 }
 
 /* Navigation Arrows */
@@ -225,7 +225,7 @@ body {
 }
 
 .navbar:hover ~ .cards-stack {
-    transform: translate(calc(-50% + 50px), -50%);
+    transform: translate(calc(-50% + 125px), -50%);
 }
 
 /* Event Card Full */
