@@ -226,35 +226,31 @@ document.addEventListener('DOMContentLoaded', function() {
         let isTransitioning = false;
         
         function positionCards(instant = false) {
-            allCards.forEach((card, index) => {
-                const offset = index - currentPosition;
-                const absOffset = Math.abs(offset);
-                
-                // Calculate position and scale
-                let translateX = offset * (400 + 50);
-                let translateZ = -absOffset * padding;
-                let scale = 1 - (absOffset * 0.2);
-                let opacity = absOffset <= 2 ? 1 - (absOffset * 0.3) : 0;
-                
-                if (instant) {
-                    card.style.transition = 'none';
-                } else {
-                    card.style.transition = 'all 0.5s ease';
-                }
-                
-                card.style.transform = `
-                    translateX(${translateX}px)
-                    translateZ(${translateZ}px)
-                    scale(${Math.max(scale, 0.4)})
-                `;
-                card.style.opacity = opacity;
-                card.style.zIndex = 100 - absOffset;
-                
-                if (offset === 0) {
-                    card.style.pointerEvents = 'auto';
-                } else {
-                    card.style.pointerEvents = 'none';
-                }
+            // Use requestAnimationFrame for smoother animations
+            requestAnimationFrame(() => {
+                allCards.forEach((card, index) => {
+                    const offset = index - currentPosition;
+                    const absOffset = Math.abs(offset);
+                    
+                    // Calculate position and scale
+                    const translateX = offset * 450;
+                    const translateZ = -absOffset * padding;
+                    const scale = Math.max(1 - (absOffset * 0.2), 0.4);
+                    const opacity = absOffset <= 2 ? 1 - (absOffset * 0.3) : 0;
+                    
+                    if (instant) {
+                        card.style.transition = 'none';
+                    } else {
+                        card.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+                    }
+                    
+                    card.style.transform = `translate3d(${translateX}px, 0, ${translateZ}px) scale3d(${scale}, ${scale}, 1)`;
+                    card.style.opacity = opacity;
+                    card.style.zIndex = 100 - absOffset;
+                    
+                    // Only center card is clickable
+                    card.style.pointerEvents = offset === 0 ? 'auto' : 'none';
+                });
             });
         }
         

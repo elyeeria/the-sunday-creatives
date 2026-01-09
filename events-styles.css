@@ -224,6 +224,8 @@ body {
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
 }
 
 /* Card stacking effect */
@@ -268,6 +270,8 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    transform: translateZ(0);
+    will-change: transform;
 }
 
 .card-overlay {
@@ -358,8 +362,10 @@ body {
     background-position: center;
     padding: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    transform: rotate(-3deg);
+    transform: rotate(-3deg) translateZ(0);
     transition: transform 0.3s ease;
+    will-change: transform;
+    backface-visibility: hidden;
 }
 
 .polaroid:nth-child(2) {
