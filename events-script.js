@@ -7,20 +7,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize card positions
     function updateCardPositions() {
-        cards.forEach((card, index) => {
-            const position = (index - currentIndex + totalCards) % totalCards;
-            
-            if (position === 0) {
-                card.setAttribute('data-position', '0');
-            } else if (position === 1) {
-                card.setAttribute('data-position', '1');
-            } else if (position === 2) {
-                card.setAttribute('data-position', '2');
-            } else if (position === 3) {
-                card.setAttribute('data-position', '3');
-            } else {
-                card.setAttribute('data-position', 'hidden');
-            }
+        requestAnimationFrame(() => {
+            cards.forEach((card, index) => {
+                const position = (index - currentIndex + totalCards) % totalCards;
+                
+                if (position === 0) {
+                    card.setAttribute('data-position', '0');
+                } else if (position === 1) {
+                    card.setAttribute('data-position', '1');
+                } else if (position === 2) {
+                    card.setAttribute('data-position', '2');
+                } else if (position === 3) {
+                    card.setAttribute('data-position', '3');
+                } else {
+                    card.setAttribute('data-position', 'hidden');
+                }
+            });
         });
     }
 
