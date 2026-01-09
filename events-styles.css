@@ -403,6 +403,15 @@ body {
 
 /* Responsive Design */
 @media (max-width: 1024px) {
+    .navbar:hover ~ .page-title,
+    .navbar:hover ~ .cards-stack {
+        transform: translateX(calc(-50% + 75px));
+    }
+    
+    .navbar:hover ~ .cards-stack {
+        transform: translate(calc(-50% + 75px), -50%);
+    }
+    
     .card-content {
         padding: 5rem 3rem 3rem 3rem;
     }
@@ -418,16 +427,42 @@ body {
 }
 
 @media (max-width: 768px) {
-    .page-title {
-        font-size: 2rem;
-        top: 1.5rem;
+    /* Disable hover effects on mobile */
+    .navbar:hover ~ .page-title {
+        transform: translateX(-50%);
     }
     
-    .back-button {
-        top: 1.5rem;
+    .navbar:hover ~ .cards-stack {
+        transform: translate(-50%, -50%);
+    }
+    
+    .navbar:hover ~ .nav-arrow-left {
         left: 1rem;
-        font-size: 1rem;
-        padding: 0.5rem 1rem;
+    }
+    
+    .navbar {
+        top: 5vh;
+        width: 60px;
+        padding: 1.5rem 0;
+    }
+    
+    .navbar:hover {
+        width: 60px;
+        background: transparent;
+        backdrop-filter: none;
+        box-shadow: none;
+    }
+    
+    .navbar:hover::before,
+    .navbar:hover::after {
+        opacity: 0;
+    }
+    
+    .page-title {
+        font-size: 2.5rem;
+        top: 3vh;
+        left: 50%;
+        transform: translateX(-50%);
     }
     
     .nav-arrow {
@@ -438,6 +473,7 @@ body {
     
     .nav-arrow-left {
         left: 1rem;
+        transition: none;
     }
     
     .nav-arrow-right {
@@ -445,12 +481,15 @@ body {
     }
     
     .cards-stack {
-        width: 90vw;
-        height: 85vh;
+        width: 95vw;
+        height: 80vh;
+        top: calc(50% + 3vh);
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
     
     .card-content {
-        padding: 5rem 2rem 2rem 2rem;
+        padding: 4rem 2rem 2rem 2rem;
     }
     
     .event-title-full {
@@ -463,6 +502,12 @@ body {
     
     .event-details {
         font-size: 1rem;
+        line-height: 1.6;
+    }
+    
+    .calendar-button {
+        font-size: 1rem;
+        padding: 0.7rem 1.8rem;
     }
     
     .polaroid-photos {
@@ -477,6 +522,59 @@ body {
 }
 
 @media (max-width: 480px) {
+    .navbar {
+        width: 50px;
+        left: 0.5rem;
+        top: 3vh;
+        padding: 1rem 0;
+    }
+    
+    .page-title {
+        font-size: 2rem;
+        top: 2vh;
+    }
+    
+    .cards-stack {
+        width: 95vw;
+        height: 85vh;
+        top: calc(50% + 2vh);
+    }
+    
+    .card-content {
+        padding: 3rem 1.5rem 1.5rem 1.5rem;
+    }
+    
+    .event-title-full {
+        font-size: 2rem;
+    }
+    
+    .event-date-full {
+        font-size: 1.1rem;
+    }
+    
+    .event-details {
+        font-size: 0.95rem;
+    }
+    
+    .calendar-button {
+        font-size: 0.95rem;
+        padding: 0.6rem 1.5rem;
+    }
+    
+    .nav-arrow {
+        width: 35px;
+        height: 35px;
+        font-size: 1.3rem;
+    }
+    
+    .nav-arrow-left {
+        left: 0.5rem;
+    }
+    
+    .nav-arrow-right {
+        right: 0.5rem;
+    }
+    
     .polaroid-photos {
         flex-direction: column;
         gap: 0.5rem;
