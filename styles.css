@@ -347,13 +347,12 @@ h2, h3, .event-title {
     padding: 4rem 0 2rem 0;
     margin-top: 100vh;
     background: transparent;
-    min-height: auto;
-    height: fit-content;
+    min-height: 100vh;
     position: relative;
     z-index: 10;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .events-container {
