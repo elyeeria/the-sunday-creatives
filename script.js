@@ -177,44 +177,51 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Add scroll indicator for events gallery
-    // 3D Carousel functionality (circular loop)
+    // 3D Carousel functionality (infinite seamless loop)
     if (eventsGallery) {
-        const eventCards = Array.from(document.querySelectorAll('.event-card'));
-        const totalCards = eventCards.length;
-        let currentIndex = 0;
-        const padding = 200; // Side cards offset
+        const originalCards = Array.from(document.querySelectorAll('.event-card'));
+        const totalCards = originalCards.length;
+        
+        // Clone cards to create seamless loop (add clones before and after)
+        const clonesAfter = originalCards.map(card => {
+            const clone = card.cloneNode(true);
+            clone.classList.add('clone');
+            return clone;
+        });
+        
+        const clonesBefore = originalCards.map(card => {
+            const clone = card.cloneNode(true);
+            clone.classList.add('clone');
+            return clone;
+        });
+        
+        // Append clones to gallery
+        clonesAfter.forEach(clone => eventsGallery.appendChild(clone));
+        clonesBefore.forEach(clone => eventsGallery.insertBefore(clone, eventsGallery.firstChild));
+        
+        // Get all cards including clones
+        const allCards = Array.from(eventsGallery.querySelectorAll('.event-card'));
+        let currentPosition = 0; // This represents the visual center position
+        const padding = 200;
         let isTransitioning = false;
         
-        function getCircularOffset(index, currentIndex, totalCards) {
-            let offset = index - currentIndex;
-            // Wrap around to find shortest path
-            if (offset > totalCards / 2) {
-                offset -= totalCards;
-            } else if (offset < -totalCards / 2) {
-                offset += totalCards;
-            }
-            return offset;
-        }
-        
         function positionCards(instant = false) {
-            eventCards.forEach((card, index) => {
-                const offset = getCircularOffset(index, currentIndex, totalCards);
+            allCards.forEach((card, index) => {
+                const offset = index - currentPosition;
                 const absOffset = Math.abs(offset);
                 
                 // Calculate position and scale
-                let translateX = offset * (400 + 50); // Card width + gap
+                let translateX = offset * (400 + 50);
                 let translateZ = -absOffset * padding;
                 let scale = 1 - (absOffset * 0.2);
                 let opacity = absOffset <= 2 ? 1 - (absOffset * 0.3) : 0;
                 
-                // Disable transition for instant positioning
                 if (instant) {
                     card.style.transition = 'none';
                 } else {
                     card.style.transition = 'all 0.5s ease';
                 }
                 
-                // Center card is at z=0, side cards go back
                 card.style.transform = `
                     translateX(${translateX}px)
                     translateZ(${translateZ}px)
@@ -223,7 +230,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 card.style.opacity = opacity;
                 card.style.zIndex = 100 - absOffset;
                 
-                // Only center card is clickable
                 if (offset === 0) {
                     card.style.pointerEvents = 'auto';
                 } else {
@@ -236,10 +242,17 @@ document.addEventListener('DOMContentLoaded', function() {
             if (isTransitioning) return;
             isTransitioning = true;
             
-            currentIndex = (currentIndex + 1) % totalCards;
+            currentPosition++;
             positionCards();
             
             setTimeout(() => {
+                // Reset position if we've gone past the original set
+                if (currentPosition >= totalCards * 2) {
+                    currentPosition = totalCards;
+                    positionCards(true);
+                    // Force reflow
+                    void allCards[0].offsetHeight;
+                }
                 isTransitioning = false;
             }, 500);
         }
@@ -248,20 +261,27 @@ document.addEventListener('DOMContentLoaded', function() {
             if (isTransitioning) return;
             isTransitioning = true;
             
-            currentIndex = (currentIndex - 1 + totalCards) % totalCards;
+            currentPosition--;
             positionCards();
             
             setTimeout(() => {
+                // Reset position if we've gone before the original set
+                if (currentPosition < totalCards) {
+                    currentPosition = totalCards * 2 - 1;
+                    positionCards(true);
+                    // Force reflow
+                    void allCards[0].offsetHeight;
+                }
                 isTransitioning = false;
             }, 500);
         }
         
-        // Initial positioning
+        // Start at the middle (original cards)
+        currentPosition = totalCards;
         positionCards(true);
         
-        // Force reflow to ensure instant positioning takes effect
         setTimeout(() => {
-            eventCards.forEach(card => {
+            allCards.forEach(card => {
                 card.style.transition = 'all 0.5s ease';
             });
         }, 50);
