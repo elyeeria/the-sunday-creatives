@@ -177,63 +177,77 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Add scroll indicator for events gallery
-    // 3D Carousel functionality
+    // 3D Carousel functionality (similar to Materialize style)
     if (eventsGallery) {
-        const eventCards = document.querySelectorAll('.event-card');
+        const eventCards = Array.from(document.querySelectorAll('.event-card'));
         const totalCards = eventCards.length;
-        let currentRotation = 0;
-        const angleIncrement = 360 / totalCards;
-        const radius = 350; // Reduced distance from center for better visibility
+        let currentIndex = 0;
+        const padding = 200; // Side cards offset
         
-        // Position cards in 3D circle
         function positionCards() {
             eventCards.forEach((card, index) => {
-                const angle = (angleIncrement * index) * Math.PI / 180;
-                const x = Math.sin(angle) * radius;
-                const z = Math.cos(angle) * radius;
+                const offset = index - currentIndex;
+                const absOffset = Math.abs(offset);
                 
-                // Cards always face the user (no rotation)
+                // Calculate position and scale
+                let translateX = offset * (400 + 50); // Card width + gap
+                let translateZ = -absOffset * padding;
+                let scale = 1 - (absOffset * 0.2);
+                let opacity = absOffset <= 2 ? 1 - (absOffset * 0.3) : 0;
+                
+                // Center card is at z=0, side cards go back
                 card.style.transform = `
-                    translateX(${x}px)
-                    translateZ(${z}px)
+                    translateX(${translateX}px)
+                    translateZ(${translateZ}px)
+                    scale(${Math.max(scale, 0.4)})
                 `;
+                card.style.opacity = opacity;
+                card.style.zIndex = 100 - absOffset;
+                
+                // Only center card is clickable
+                if (offset === 0) {
+                    card.style.pointerEvents = 'auto';
+                } else {
+                    card.style.pointerEvents = 'none';
+                }
             });
         }
         
-        // Rotate carousel
-        function rotateCarousel(direction) {
-            currentRotation += direction * angleIncrement;
-            eventsGallery.style.transform = `rotateY(${currentRotation}deg)`;
+        function nextCard() {
+            currentIndex = (currentIndex + 1) % totalCards;
+            positionCards();
         }
         
+        function prevCard() {
+            currentIndex = (currentIndex - 1 + totalCards) % totalCards;
+            positionCards();
+        }
+        
+        // Initial positioning
         positionCards();
         
         // Auto-rotate carousel
-        let autoRotateInterval = setInterval(() => {
-            rotateCarousel(1);
-        }, 3000);
+        let autoRotateInterval = setInterval(nextCard, 4000);
         
-        // Manual navigation on click
+        // Click to advance
         eventsGallery.addEventListener('click', (e) => {
-            clearInterval(autoRotateInterval);
-            rotateCarousel(1);
-            
-            // Restart auto-rotate after 5 seconds of inactivity
-            autoRotateInterval = setInterval(() => {
-                rotateCarousel(1);
-            }, 3000);
+            if (!e.target.closest('.event-card')) {
+                clearInterval(autoRotateInterval);
+                nextCard();
+                autoRotateInterval = setInterval(nextCard, 4000);
+            }
         });
         
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowLeft') {
                 clearInterval(autoRotateInterval);
-                rotateCarousel(-1);
-                autoRotateInterval = setInterval(() => rotateCarousel(1), 3000);
+                prevCard();
+                autoRotateInterval = setInterval(nextCard, 4000);
             } else if (e.key === 'ArrowRight') {
                 clearInterval(autoRotateInterval);
-                rotateCarousel(1);
-                autoRotateInterval = setInterval(() => rotateCarousel(1), 3000);
+                nextCard();
+                autoRotateInterval = setInterval(nextCard, 4000);
             }
         });
     }
