@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Add scroll indicator for events gallery
-    // 3D Carousel functionality (similar to Materialize style)
+    // 3D Carousel functionality (circular loop)
     if (eventsGallery) {
         const eventCards = Array.from(document.querySelectorAll('.event-card'));
         const totalCards = eventCards.length;
@@ -185,9 +185,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const padding = 200; // Side cards offset
         let isTransitioning = false;
         
+        function getCircularOffset(index, currentIndex, totalCards) {
+            let offset = index - currentIndex;
+            // Wrap around to find shortest path
+            if (offset > totalCards / 2) {
+                offset -= totalCards;
+            } else if (offset < -totalCards / 2) {
+                offset += totalCards;
+            }
+            return offset;
+        }
+        
         function positionCards(instant = false) {
             eventCards.forEach((card, index) => {
-                const offset = index - currentIndex;
+                const offset = getCircularOffset(index, currentIndex, totalCards);
                 const absOffset = Math.abs(offset);
                 
                 // Calculate position and scale
