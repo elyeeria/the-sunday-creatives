@@ -344,7 +344,7 @@ h2, h3, .event-title {
 
 /* Events Section */
 .events-section {
-    padding: 4rem 0 2rem 0;
+    padding: 4rem 0 0.5rem 0;
     margin-top: 100vh;
     background: transparent;
     min-height: 100vh;
