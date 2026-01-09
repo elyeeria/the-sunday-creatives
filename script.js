@@ -243,17 +243,15 @@ document.addEventListener('DOMContentLoaded', function() {
             isTransitioning = true;
             
             currentPosition++;
+            
+            // Check if we need to reset BEFORE positioning
+            if (currentPosition >= totalCards * 2) {
+                currentPosition = totalCards;
+            }
+            
             positionCards();
             
             setTimeout(() => {
-                // Reset position if we've cycled through all cards
-                if (currentPosition > totalCards * 2 - 1) {
-                    currentPosition = totalCards;
-                    positionCards(true);
-                    setTimeout(() => {
-                        allCards.forEach(card => card.style.transition = 'all 0.5s ease');
-                    }, 50);
-                }
                 isTransitioning = false;
             }, 500);
         }
@@ -263,17 +261,15 @@ document.addEventListener('DOMContentLoaded', function() {
             isTransitioning = true;
             
             currentPosition--;
+            
+            // Check if we need to reset BEFORE positioning
+            if (currentPosition < totalCards) {
+                currentPosition = totalCards * 2 - 1;
+            }
+            
             positionCards();
             
             setTimeout(() => {
-                // Reset position if we've gone before the clones
-                if (currentPosition < totalCards) {
-                    currentPosition = totalCards * 2 - 1;
-                    positionCards(true);
-                    setTimeout(() => {
-                        allCards.forEach(card => card.style.transition = 'all 0.5s ease');
-                    }, 50);
-                }
                 isTransitioning = false;
             }, 500);
         }
