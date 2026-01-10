@@ -378,6 +378,13 @@ document.addEventListener('DOMContentLoaded', () => {
             polaroid2: 'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?q=80&w=2141'
         };
         
+        // Default craft/butcher paper images
+        const craftDefaults = {
+            backgroundImage: 'https://images.unsplash.com/photo-1557672172-298e090bd0f1?q=80&w=2487',
+            polaroid1: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=2071',
+            polaroid2: 'https://images.unsplash.com/photo-1452860606245-08befc0ff44b?q=80&w=2070'
+        };
+        
         // Apply style-specific defaults
         function applyStyleDefaults() {
             if (selectedStyle === 'outdoor') {
@@ -395,6 +402,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 p1Preview.style.backgroundImage = `url('${outdoorDefaults.polaroid1}')`;
                 p1Preview.classList.add('show');
                 p2Preview.style.backgroundImage = `url('${outdoorDefaults.polaroid2}')`;
+                p2Preview.classList.add('show');
+            } else if (selectedStyle === 'craft') {
+                document.getElementById('backgroundImage').value = craftDefaults.backgroundImage;
+                document.getElementById('polaroid1').value = craftDefaults.polaroid1;
+                document.getElementById('polaroid2').value = craftDefaults.polaroid2;
+                
+                // Show previews
+                const bgPreview = document.getElementById('backgroundImagePreview');
+                const p1Preview = document.getElementById('polaroid1Preview');
+                const p2Preview = document.getElementById('polaroid2Preview');
+                
+                bgPreview.style.backgroundImage = `url('${craftDefaults.backgroundImage}')`;
+                bgPreview.classList.add('show');
+                p1Preview.style.backgroundImage = `url('${craftDefaults.polaroid1}')`;
+                p1Preview.classList.add('show');
+                p2Preview.style.backgroundImage = `url('${craftDefaults.polaroid2}')`;
                 p2Preview.classList.add('show');
             }
         }
