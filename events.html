@@ -44,7 +44,15 @@
     <!-- Page Title -->
     <h1 class="page-title">EVENTS</h1>
 
-    <!-- Admin Controls (hidden by default) -->
+    <!-- Admin Login Button (always visible) -->
+    <a href="admin-login.html" class="admin-login-link" id="adminLoginLink" title="Admin Login">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+    </a>
+
+    <!-- Admin Controls (hidden by default, shown when logged in) -->
     <div class="admin-controls" id="adminControls">
         <button class="admin-btn add-event-btn" id="addEventBtn" title="Add New Event">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -61,12 +69,12 @@
         </button>
     </div>
 
-    <!-- Stacked Cards Container -->
-    <div class="cards-stack" id="cardsStack">
-
     <!-- Navigation Arrows -->
     <button class="nav-arrow nav-arrow-left" aria-label="Previous event">‹</button>
     <button class="nav-arrow nav-arrow-right" aria-label="Next event">›</button>
+
+    <!-- Stacked Cards Container -->
+    <div class="cards-stack" id="cardsStack">
         <!-- Event Card 1 -->
         <div class="event-card-full" data-index="0">
             <div class="card-background" style="background-image: url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070');" loading="lazy"></div>
