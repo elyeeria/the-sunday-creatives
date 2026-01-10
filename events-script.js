@@ -17,29 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
     
-    // Load events from localStorage or use default
-    let events = JSON.parse(localStorage.getItem('events')) || getDefaultEvents();
+    // Handle admin login link visibility
+    const adminLoginLink = document.getElementById('adminLoginLink');
+    if (adminLoginLink && isAdmin) {
+        adminLoginLink.classList.add('hidden');
+    }
     
-    // Auto-archive past events
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    events = events.filter(event => {
-        const eventDate = new Date(event.date);
-        eventDate.setHours(0, 0, 0, 0);
-        
-        if (eventDate < today) {
-            // Archive the event
-            archiveEvent(event);
-            return false;
-        }
-        return true;
-    });
-    
-    saveEvents();
-    
-    // Render events
-    renderEvents();
+    // Load events from localStorage or get from existing HTML
+    let events = JSON.parse(localStorage.getItem('events')) || null;
     
     const cardsStack = document.querySelector('.cards-stack');
     let cards = Array.from(document.querySelectorAll('.event-card-full'));
@@ -47,6 +32,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const rightArrow = document.querySelector('.nav-arrow-right');
     let currentIndex = 0;
     let totalCards = cards.length;
+    
+    // If we have saved events and in admin mode, render them
+    if (events && isAdmin) {
+        // Auto-archive past events
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        events = events.filter(event => {
+            const eventDate = new Date(event.date);
+            eventDate.setHours(0, 0, 0, 0);
+            
+            if (eventDate < today) {
+                archiveEvent(event);
+                return false;
+            }
+            return true;
+        });
+        
+        saveEvents();
+        renderEvents();
+        
+        // Update cards reference after rendering
+        cards = Array.from(document.querySelectorAll('.event-card-full'));
+        totalCards = cards.length;
+    } else if (!events) {
+        // First time load - save existing HTML cards to localStorage
+        saveExistingCardsToLocalStorage();
+    }
     
     // Admin UI setup
     if (isAdmin) {
@@ -103,6 +116,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Click on stacked cards to bring forward
+    function setupCardClickHandlers() {
+        cards.forEach((card) => {
+            card.addEventListener('click', (e) => {
+                // Don't navigate if clicking admin buttons
+                if (e.target.closest('.card-admin-btn')) return;
+                
+                const position = card.getAttribute('data-position');
+                if (position !== '0') {
+                    const targetIndex = parseInt(card.getAttribute('data-index'));
+                    currentIndex = targetIndex;
+                    updateCardPositions();
+                }
+            });
+        });
+    }
+    
+    setupCardClickHandlers();
+
     // Touch/swipe support for mobile
     let touchStartX = 0;
     let touchEndX = 0;
@@ -125,6 +157,36 @@ document.addEventListener('DOMContentLoaded', () => {
             prevCard();
         }
     }
+    
+    // Save existing cards from HTML to localStorage
+    function saveExistingCardsToLocalStorage() {
+        const existingCards = Array.from(document.querySelectorAll('.event-card-full'));
+        const events = existingCards.map((card, index) => {
+            const title = card.querySelector('.event-title-full')?.textContent || '';
+            const dateText = card.querySelector('.event-date-full')?.textContent || '';
+            const details = card.querySelector('.event-details')?.textContent || '';
+            const backgroundImage = card.querySelector('.card-background')?.style.backgroundImage?.match(/url\(['"]?([^'"]+)['"]?\)/)?.[1] || '';
+            const polaroids = card.querySelectorAll('.polaroid');
+            const polaroid1 = polaroids[0]?.style.backgroundImage?.match(/url\(['"]?([^'"]+)['"]?\)/)?.[1] || '';
+            const polaroid2 = polaroids[1]?.style.backgroundImage?.match(/url\(['"]?([^'"]+)['"]?\)/)?.[1] || '';
+            
+            // Parse date from text like "January 15, 2026"
+            const date = new Date(dateText).toISOString().split('T')[0];
+            
+            return {
+                id: Date.now() + index,
+                title,
+                date,
+                details,
+                backgroundImage,
+                polaroid1,
+                polaroid2,
+                style: 'minimal'
+            };
+        });
+        
+        localStorage.setItem('events', JSON.stringify(events));
+    }
 
     // Render events
     function renderEvents() {
@@ -142,19 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
         totalCards = cards.length;
         
         // Setup card click handlers
-        cards.forEach((card) => {
-            card.addEventListener('click', (e) => {
-                // Don't navigate if clicking admin buttons
-                if (e.target.closest('.card-admin-btn')) return;
-                
-                const position = card.getAttribute('data-position');
-                if (position !== '0') {
-                    const targetIndex = parseInt(card.getAttribute('data-index'));
-                    currentIndex = targetIndex;
-                    updateCardPositions();
-                }
-            });
-        });
+        setupCardClickHandlers();
         
         // Add admin buttons if in admin mode
         if (isAdmin) {
@@ -194,62 +244,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
         `;
-    }
-
-    // Get default events
-    function getDefaultEvents() {
-        return [
-            {
-                id: Date.now() + 1,
-                title: 'Creative Workshop',
-                date: '2026-01-15',
-                details: 'Join us for an inspiring creative workshop where we\'ll explore new techniques, share ideas, and collaborate on exciting projects. Perfect for artists, designers, and creative minds of all levels.',
-                backgroundImage: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070',
-                polaroid1: 'https://images.unsplash.com/photo-1452457807411-4979b707c5be?q=80&w=2071',
-                polaroid2: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070',
-                style: 'minimal'
-            },
-            {
-                id: Date.now() + 2,
-                title: 'Art Exhibition',
-                date: '2026-02-02',
-                details: 'Experience a stunning showcase of local artists featuring diverse mediums and perspectives. This exhibition celebrates creativity and community through visual storytelling.',
-                backgroundImage: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=2069',
-                polaroid1: 'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?q=80&w=2080',
-                polaroid2: 'https://images.unsplash.com/photo-1577083300919-d36841dc2238?q=80&w=2070',
-                style: 'vibrant'
-            },
-            {
-                id: Date.now() + 3,
-                title: 'Community Meetup',
-                date: '2026-02-20',
-                details: 'Connect with fellow creatives in a relaxed, informal setting. Share your work, exchange ideas, and build lasting connections within our vibrant community.',
-                backgroundImage: 'https://images.unsplash.com/photo-1475503572774-15a45e5d60b9?q=80&w=2070',
-                polaroid1: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069',
-                polaroid2: 'https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=2070',
-                style: 'elegant'
-            },
-            {
-                id: Date.now() + 4,
-                title: 'Design Talk',
-                date: '2026-03-05',
-                details: 'Hear from industry professionals about the latest trends, challenges, and opportunities in creative design. Gain insights and inspiration for your own creative journey.',
-                backgroundImage: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=2069',
-                polaroid1: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=2070',
-                polaroid2: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070',
-                style: 'bold'
-            },
-            {
-                id: Date.now() + 5,
-                title: 'Craft Fair',
-                date: '2026-03-22',
-                details: 'Browse and purchase unique handmade goods from local artisans. Support the creative community while finding one-of-a-kind treasures and gifts.',
-                backgroundImage: 'https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?q=80&w=2070',
-                polaroid1: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?q=80&w=2070',
-                polaroid2: 'https://images.unsplash.com/photo-1530099486328-e021101a494a?q=80&w=2047',
-                style: 'minimal'
-            }
-        ];
     }
 
     // Save events to localStorage
