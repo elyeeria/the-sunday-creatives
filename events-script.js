@@ -235,10 +235,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="polaroid-photos">
                         <div class="polaroid">
-                            <div class="polaroid-frame" style="background-image: url('${event.polaroid1}');"></div>
+                            <div class="polaroid-frame" style="background-image: url('${event.polaroid1}');" role="img" aria-label="Event photo 1"></div>
                         </div>
                         <div class="polaroid">
-                            <div class="polaroid-frame" style="background-image: url('${event.polaroid2}');"></div>
+                            <div class="polaroid-frame" style="background-image: url('${event.polaroid2}');" role="img" aria-label="Event photo 2"></div>
                         </div>
                     </div>
                 </div>

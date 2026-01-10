@@ -691,13 +691,14 @@ body {
     padding: 0.75rem 2rem;
     border-radius: 30px;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     margin-bottom: 2rem;
 }
 
 .calendar-button:hover {
     background: rgba(255, 255, 255, 0.25);
     transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
 }
 
 .event-details {
@@ -708,7 +709,9 @@ body {
     max-width: 550px;
     max-height: 150px;
     overflow-y: auto;
-    padding-right: 1rem;
+    padding-right: 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.4) rgba(255, 255, 255, 0.1);
 }
 
 .event-details::-webkit-scrollbar {
@@ -723,6 +726,7 @@ body {
 .event-details::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.4);
     border-radius: 4px;
+    transition: background 0.2s ease;
 }
 
 .event-details::-webkit-scrollbar-thumb:hover {
@@ -744,8 +748,8 @@ body {
     background-color: white;
     padding: 12px 12px 40px 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    transform: rotate(-3deg) translateZ(0);
-    transition: transform 0.3s ease;
+    transform: rotate(-3deg) translateZ(0) scale3d(1, 1, 1);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: transform;
     backface-visibility: hidden;
     display: flex;
@@ -753,13 +757,14 @@ body {
 }
 
 .polaroid:nth-child(2) {
-    transform: rotate(5deg) translateZ(0);
+    transform: rotate(5deg) translateZ(0) scale3d(1, 1, 1);
     margin-top: 1.5rem;
 }
 
 .polaroid:hover {
-    transform: rotate(0deg) scale(1.05) translateZ(0);
+    transform: rotate(0deg) scale3d(1.05, 1.05, 1) translateZ(0);
     z-index: 10;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
 }
 
 .polaroid-frame {
@@ -769,6 +774,8 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     overflow: hidden;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
 }
 
 /* Responsive Design */
