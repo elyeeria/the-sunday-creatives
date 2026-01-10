@@ -653,7 +653,7 @@ body {
     position: relative;
     z-index: 2;
     height: 100%;
-    padding: 6rem 4rem 4rem 4rem;
+    padding: 6rem 4rem 20rem 4rem;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -754,7 +754,8 @@ body {
 /* Polaroid Photos */
 .polaroid-photos {
     display: flex;
-    gap: 2rem;
+    flex-direction: column;
+    gap: 1.5rem;
     position: fixed;
     bottom: 4rem;
     right: 4rem;
@@ -777,7 +778,6 @@ body {
 
 .polaroid:nth-child(2) {
     transform: rotate(5deg) translateZ(0) scale3d(1, 1, 1);
-    margin-top: 1.5rem;
 }
 
 .polaroid:hover {
