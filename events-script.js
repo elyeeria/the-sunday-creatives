@@ -380,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Default craft/butcher paper images
         const craftDefaults = {
-            backgroundImage: 'https://images.unsplash.com/photo-1557672172-298e090bd0f1?q=80&w=2487',
+            backgroundImage: 'https://images.unsplash.com/photo-1585399000684-d2f72660f092?q=80&w=2071',
             polaroid1: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=2071',
             polaroid2: 'https://images.unsplash.com/photo-1452860606245-08befc0ff44b?q=80&w=2070'
         };
