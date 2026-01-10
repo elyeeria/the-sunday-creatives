@@ -1,9 +1,57 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const cards = Array.from(document.querySelectorAll('.event-card-full'));
+    // Check admin authentication
+    const urlParams = new URLSearchParams(window.location.search);
+    const isAdminView = urlParams.get('admin') === 'true';
+    const isAuthenticated = sessionStorage.getItem('adminAuthenticated') === 'true';
+    const loginTime = sessionStorage.getItem('adminLoginTime');
+    
+    // Session expires after 2 hours
+    const sessionDuration = 2 * 60 * 60 * 1000;
+    const isSessionValid = loginTime && (Date.now() - parseInt(loginTime)) < sessionDuration;
+    
+    const isAdmin = isAdminView && isAuthenticated && isSessionValid;
+    
+    // Redirect to login if trying to access admin without auth
+    if (isAdminView && (!isAuthenticated || !isSessionValid)) {
+        window.location.href = 'admin-login.html';
+        return;
+    }
+    
+    // Load events from localStorage or use default
+    let events = JSON.parse(localStorage.getItem('events')) || getDefaultEvents();
+    
+    // Auto-archive past events
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    events = events.filter(event => {
+        const eventDate = new Date(event.date);
+        eventDate.setHours(0, 0, 0, 0);
+        
+        if (eventDate < today) {
+            // Archive the event
+            archiveEvent(event);
+            return false;
+        }
+        return true;
+    });
+    
+    saveEvents();
+    
+    // Render events
+    renderEvents();
+    
+    const cardsStack = document.querySelector('.cards-stack');
+    let cards = Array.from(document.querySelectorAll('.event-card-full'));
     const leftArrow = document.querySelector('.nav-arrow-left');
     const rightArrow = document.querySelector('.nav-arrow-right');
     let currentIndex = 0;
-    const totalCards = cards.length;
+    let totalCards = cards.length;
+    
+    // Admin UI setup
+    if (isAdmin) {
+        setupAdminUI();
+    }
 
     // Initialize card positions
     function updateCardPositions() {
@@ -28,19 +76,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Navigate to next card
     function nextCard() {
+        if (totalCards === 0) return;
         currentIndex = (currentIndex + 1) % totalCards;
         updateCardPositions();
     }
 
     // Navigate to previous card
     function prevCard() {
+        if (totalCards === 0) return;
         currentIndex = (currentIndex - 1 + totalCards) % totalCards;
         updateCardPositions();
     }
 
     // Event listeners
-    rightArrow.addEventListener('click', nextCard);
-    leftArrow.addEventListener('click', prevCard);
+    if (leftArrow && rightArrow) {
+        rightArrow.addEventListener('click', nextCard);
+        leftArrow.addEventListener('click', prevCard);
+    }
 
     // Keyboard navigation
     document.addEventListener('keydown', (e) => {
@@ -49,19 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (e.key === 'ArrowLeft') {
             prevCard();
         }
-    });
-
-    // Click on stacked cards to bring forward
-    cards.forEach((card, index) => {
-        card.addEventListener('click', () => {
-            const position = card.getAttribute('data-position');
-            if (position !== '0') {
-                // Calculate how many steps to reach this card
-                const targetIndex = parseInt(card.getAttribute('data-index'));
-                currentIndex = targetIndex;
-                updateCardPositions();
-            }
-        });
     });
 
     // Touch/swipe support for mobile
@@ -80,15 +119,336 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleSwipe() {
         const swipeThreshold = 50;
         if (touchEndX < touchStartX - swipeThreshold) {
-            // Swiped left
             nextCard();
         }
         if (touchEndX > touchStartX + swipeThreshold) {
-            // Swiped right
             prevCard();
         }
     }
 
+    // Render events
+    function renderEvents() {
+        if (!cardsStack) return;
+        
+        cardsStack.innerHTML = '';
+        
+        events.forEach((event, index) => {
+            const cardHTML = createEventCardHTML(event, index);
+            cardsStack.insertAdjacentHTML('beforeend', cardHTML);
+        });
+        
+        // Update cards array and total
+        cards = Array.from(document.querySelectorAll('.event-card-full'));
+        totalCards = cards.length;
+        
+        // Setup card click handlers
+        cards.forEach((card) => {
+            card.addEventListener('click', (e) => {
+                // Don't navigate if clicking admin buttons
+                if (e.target.closest('.card-admin-btn')) return;
+                
+                const position = card.getAttribute('data-position');
+                if (position !== '0') {
+                    const targetIndex = parseInt(card.getAttribute('data-index'));
+                    currentIndex = targetIndex;
+                    updateCardPositions();
+                }
+            });
+        });
+        
+        // Add admin buttons if in admin mode
+        if (isAdmin) {
+            addAdminButtonsToCards();
+        }
+        
+        updateCardPositions();
+    }
+
+    // Create event card HTML
+    function createEventCardHTML(event, index) {
+        const formattedDate = new Date(event.date).toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+        
+        return `
+            <div class="event-card-full" data-index="${index}" data-event-id="${event.id}">
+                <div class="card-background" style="background-image: url('${event.backgroundImage}');" loading="lazy"></div>
+                <div class="card-overlay"></div>
+                <div class="card-content">
+                    <div class="card-main-info">
+                        <h2 class="event-title-full">${event.title}</h2>
+                        <p class="event-date-full">${formattedDate}</p>
+                        <a href="#" class="calendar-button">Add to Calendar</a>
+                        <p class="event-details">${event.details}</p>
+                    </div>
+                    <div class="polaroid-photos">
+                        <div class="polaroid" style="background-image: url('${event.polaroid1}');" loading="lazy">
+                            <div class="polaroid-frame"></div>
+                        </div>
+                        <div class="polaroid" style="background-image: url('${event.polaroid2}');" loading="lazy">
+                            <div class="polaroid-frame"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Get default events
+    function getDefaultEvents() {
+        return [
+            {
+                id: Date.now() + 1,
+                title: 'Creative Workshop',
+                date: '2026-01-15',
+                details: 'Join us for an inspiring creative workshop where we\'ll explore new techniques, share ideas, and collaborate on exciting projects. Perfect for artists, designers, and creative minds of all levels.',
+                backgroundImage: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070',
+                polaroid1: 'https://images.unsplash.com/photo-1452457807411-4979b707c5be?q=80&w=2071',
+                polaroid2: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=2070',
+                style: 'minimal'
+            },
+            {
+                id: Date.now() + 2,
+                title: 'Art Exhibition',
+                date: '2026-02-02',
+                details: 'Experience a stunning showcase of local artists featuring diverse mediums and perspectives. This exhibition celebrates creativity and community through visual storytelling.',
+                backgroundImage: 'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=2069',
+                polaroid1: 'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?q=80&w=2080',
+                polaroid2: 'https://images.unsplash.com/photo-1577083300919-d36841dc2238?q=80&w=2070',
+                style: 'vibrant'
+            },
+            {
+                id: Date.now() + 3,
+                title: 'Community Meetup',
+                date: '2026-02-20',
+                details: 'Connect with fellow creatives in a relaxed, informal setting. Share your work, exchange ideas, and build lasting connections within our vibrant community.',
+                backgroundImage: 'https://images.unsplash.com/photo-1475503572774-15a45e5d60b9?q=80&w=2070',
+                polaroid1: 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=2069',
+                polaroid2: 'https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=2070',
+                style: 'elegant'
+            },
+            {
+                id: Date.now() + 4,
+                title: 'Design Talk',
+                date: '2026-03-05',
+                details: 'Hear from industry professionals about the latest trends, challenges, and opportunities in creative design. Gain insights and inspiration for your own creative journey.',
+                backgroundImage: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=2069',
+                polaroid1: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=2070',
+                polaroid2: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2070',
+                style: 'bold'
+            },
+            {
+                id: Date.now() + 5,
+                title: 'Craft Fair',
+                date: '2026-03-22',
+                details: 'Browse and purchase unique handmade goods from local artisans. Support the creative community while finding one-of-a-kind treasures and gifts.',
+                backgroundImage: 'https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?q=80&w=2070',
+                polaroid1: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?q=80&w=2070',
+                polaroid2: 'https://images.unsplash.com/photo-1530099486328-e021101a494a?q=80&w=2047',
+                style: 'minimal'
+            }
+        ];
+    }
+
+    // Save events to localStorage
+    function saveEvents() {
+        localStorage.setItem('events', JSON.stringify(events));
+    }
+
+    // Archive event
+    function archiveEvent(event) {
+        let archivedEvents = JSON.parse(localStorage.getItem('archivedEvents')) || [];
+        archivedEvents.push({
+            ...event,
+            archivedDate: new Date().toISOString()
+        });
+        localStorage.setItem('archivedEvents', JSON.stringify(archivedEvents));
+    }
+
+    // Setup admin UI
+    function setupAdminUI() {
+        const adminControls = document.getElementById('adminControls');
+        const addEventBtn = document.getElementById('addEventBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const adminModal = document.getElementById('adminModal');
+        const closeModal = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const eventForm = document.getElementById('eventForm');
+        const modalTitle = document.getElementById('modalTitle');
+        
+        let editingEventId = null;
+        let selectedStyle = 'minimal';
+        
+        // Show admin controls
+        if (adminControls) {
+            adminControls.classList.add('active');
+        }
+        
+        // Add event button
+        if (addEventBtn) {
+            addEventBtn.addEventListener('click', () => {
+                editingEventId = null;
+                modalTitle.textContent = 'Add New Event';
+                eventForm.reset();
+                selectedStyle = 'minimal';
+                updateStyleButtons();
+                adminModal.classList.add('active');
+            });
+        }
+        
+        // Logout button
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                sessionStorage.removeItem('adminAuthenticated');
+                sessionStorage.removeItem('adminLoginTime');
+                window.location.href = 'events.html';
+            });
+        }
+        
+        // Close modal
+        const closeModalHandler = () => {
+            adminModal.classList.remove('active');
+            eventForm.reset();
+        };
+        
+        if (closeModal) closeModal.addEventListener('click', closeModalHandler);
+        if (cancelBtn) cancelBtn.addEventListener('click', closeModalHandler);
+        
+        // Click outside modal to close
+        adminModal.addEventListener('click', (e) => {
+            if (e.target === adminModal) {
+                closeModalHandler();
+            }
+        });
+        
+        // Style buttons
+        const styleBtns = document.querySelectorAll('.style-btn');
+        styleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                selectedStyle = btn.dataset.style;
+                updateStyleButtons();
+            });
+        });
+        
+        function updateStyleButtons() {
+            styleBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.style === selectedStyle);
+            });
+        }
+        
+        // Form submission
+        eventForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const eventData = {
+                id: editingEventId || Date.now(),
+                title: document.getElementById('eventTitle').value,
+                date: document.getElementById('eventDate').value,
+                details: document.getElementById('eventDetails').value,
+                backgroundImage: document.getElementById('backgroundImage').value,
+                polaroid1: document.getElementById('polaroid1').value,
+                polaroid2: document.getElementById('polaroid2').value,
+                style: selectedStyle
+            };
+            
+            if (editingEventId) {
+                // Update existing event
+                const index = events.findIndex(e => e.id === editingEventId);
+                if (index !== -1) {
+                    events[index] = eventData;
+                }
+            } else {
+                // Add new event
+                events.push(eventData);
+            }
+            
+            saveEvents();
+            renderEvents();
+            closeModalHandler();
+        });
+        
+        // Edit event function (will be called by card buttons)
+        window.editEvent = (eventId) => {
+            const event = events.find(e => e.id === eventId);
+            if (!event) return;
+            
+            editingEventId = eventId;
+            modalTitle.textContent = 'Edit Event';
+            selectedStyle = event.style || 'minimal';
+            
+            document.getElementById('eventTitle').value = event.title;
+            document.getElementById('eventDate').value = event.date;
+            document.getElementById('eventDetails').value = event.details;
+            document.getElementById('backgroundImage').value = event.backgroundImage;
+            document.getElementById('polaroid1').value = event.polaroid1;
+            document.getElementById('polaroid2').value = event.polaroid2;
+            
+            updateStyleButtons();
+            adminModal.classList.add('active');
+        };
+        
+        // Delete event function
+        window.deleteEvent = (eventId) => {
+            if (confirm('Are you sure you want to delete this event?')) {
+                events = events.filter(e => e.id !== eventId);
+                saveEvents();
+                renderEvents();
+            }
+        };
+        
+        // Archive event function
+        window.archiveEventManual = (eventId) => {
+            const event = events.find(e => e.id === eventId);
+            if (!event) return;
+            
+            if (confirm('Archive this event?')) {
+                archiveEvent(event);
+                events = events.filter(e => e.id !== eventId);
+                saveEvents();
+                renderEvents();
+            }
+        };
+    }
+
+    // Add admin buttons to cards
+    function addAdminButtonsToCards() {
+        cards.forEach(card => {
+            const eventId = parseInt(card.dataset.eventId);
+            
+            const buttonsHTML = `
+                <div class="card-admin-buttons active">
+                    <button class="card-admin-btn edit-btn" onclick="editEvent(${eventId})" title="Edit">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                    </button>
+                    <button class="card-admin-btn archive-btn" onclick="archiveEventManual(${eventId})" title="Archive">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="21 8 21 21 3 21 3 8"></polyline>
+                            <rect x="1" y="3" width="22" height="5"></rect>
+                            <line x1="10" y1="12" x2="14" y2="12"></line>
+                        </svg>
+                    </button>
+                    <button class="card-admin-btn delete-btn" onclick="deleteEvent(${eventId})" title="Delete">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                    </button>
+                </div>
+            `;
+            
+            card.insertAdjacentHTML('afterbegin', buttonsHTML);
+        });
+    }
+
     // Initialize
-    updateCardPositions();
+    if (totalCards > 0) {
+        updateCardPositions();
+    }
 });
