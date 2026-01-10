@@ -717,13 +717,12 @@ body {
     width: 200px;
     height: 240px;
     background-color: white;
-    padding: 12px;
+    padding: 12px 12px 40px 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     transform: rotate(-3deg) translateZ(0);
     transition: transform 0.3s ease;
     will-change: transform;
     backface-visibility: hidden;
-    border-radius: 8px;
     display: flex;
     flex-direction: column;
 }
