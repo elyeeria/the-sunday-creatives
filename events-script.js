@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <h2 class="event-title-full">${event.title}</h2>
                         <p class="event-date-full">${formattedDate}</p>
                         <a href="#" class="calendar-button">Add to Calendar</a>
-                        <p class="event-details">${event.details}</p>
+                        <div class="event-details">${event.details}</div>
                     </div>
                     <div class="polaroid-photos">
                         <div class="polaroid">
