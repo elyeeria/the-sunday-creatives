@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         return `
-            <div class="event-card-full" data-index="${index}" data-event-id="${event.id}">
+            <div class="event-card-full" data-index="${index}" data-event-id="${event.id}" data-style="${event.style || 'craft'}">
                 <div class="card-background" style="background-image: url('${event.backgroundImage}');" loading="lazy"></div>
                 <div class="card-overlay"></div>
                 <div class="card-content">
