@@ -669,6 +669,7 @@ body {
     color: white;
     margin-bottom: 1rem;
     text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+    text-transform: uppercase;
 }
 
 .event-date-full {
@@ -676,6 +677,7 @@ body {
     font-size: 1.5rem;
     color: rgba(255, 255, 255, 0.9);
     margin-bottom: 2rem;
+    font-weight: bold;
 }
 
 .calendar-button {
@@ -743,7 +745,6 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    border-radius: 4px;
     overflow: hidden;
 }
 
