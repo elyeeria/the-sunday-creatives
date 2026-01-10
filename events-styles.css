@@ -621,7 +621,7 @@ body {
 
 /* Card Background */
 .card-background {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -629,12 +629,13 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    background-attachment: fixed;
     transform: translateZ(0);
     will-change: transform;
 }
 
 .card-overlay {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -645,6 +646,7 @@ body {
         rgba(0, 0, 0, 0.6) 50%,
         rgba(0, 0, 0, 0.85) 100%
     );
+    pointer-events: none;
 }
 
 /* Card Content */
@@ -655,7 +657,29 @@ body {
     padding: 6rem 4rem 4rem 4rem;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+.card-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.card-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.card-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    transition: background 0.2s ease;
+}
+
+.card-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
 }
 
 .card-main-info {
@@ -707,39 +731,17 @@ body {
     line-height: 1.8;
     color: rgba(255, 255, 255, 0.85);
     max-width: 550px;
-    max-height: 150px;
-    overflow-y: auto;
-    padding-right: 0.5rem;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.4) rgba(255, 255, 255, 0.1);
-}
-
-.event-details::-webkit-scrollbar {
-    width: 8px;
-}
-
-.event-details::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-}
-
-.event-details::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.4);
-    border-radius: 4px;
-    transition: background 0.2s ease;
-}
-
-.event-details::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.6);
+    margin-bottom: 2rem;
 }
 
 /* Polaroid Photos */
 .polaroid-photos {
     display: flex;
     gap: 2rem;
-    position: absolute;
+    position: fixed;
     bottom: 4rem;
     right: 4rem;
+    z-index: 5;
 }
 
 .polaroid {
