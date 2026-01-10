@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <h2 class="event-title-full">${event.title}</h2>
                         <p class="event-date-full">${formattedDate}</p>
                         <a href="#" class="calendar-button">Add to Calendar</a>
-                        <p class="event-details collapsed">${event.details}</p>
+                        <p class="event-details">${event.details}</p>
                     </div>
                     <div class="polaroid-photos">
                         <div class="polaroid">
@@ -550,11 +550,4 @@ document.addEventListener('DOMContentLoaded', () => {
     if (totalCards > 0) {
         updateCardPositions();
     }
-    
-    // Add click handlers for collapsible descriptions
-    document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('event-details') && e.target.classList.contains('collapsed')) {
-            e.target.classList.remove('collapsed');
-        }
-    });
 });
