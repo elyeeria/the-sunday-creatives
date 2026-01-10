@@ -16,6 +16,23 @@ body {
     position: relative;
 }
 
+/* Style-specific font classes */
+.event-card-full[data-style="outdoor"] .event-title-full,
+.event-card-full[data-style="outdoor"] .event-date-full,
+.event-card-full[data-style="outdoor"] .event-details,
+.event-card-full[data-style="outdoor"] .calendar-button {
+    font-family: "Thasadith", sans-serif;
+}
+
+.event-card-full[data-style="outdoor"] .event-title-full {
+    font-weight: 700;
+}
+
+.event-card-full[data-style="outdoor"] .event-details {
+    font-weight: 400;
+    font-style: italic;
+}
+
 /* Sidebar Navigation */
 .navbar {
     position: fixed;
