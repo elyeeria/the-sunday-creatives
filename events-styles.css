@@ -23,13 +23,6 @@ body {
     font-style: normal;
 }
 
-.event-card-full[data-style="outdoor"] .event-title-full,
-.event-card-full[data-style="outdoor"] .event-date-full,
-.event-card-full[data-style="outdoor"] .event-details,
-.event-card-full[data-style="outdoor"] .calendar-button {
-    font-family: "Thasadith", sans-serif;
-}
-
 .event-card-full[data-style="outdoor"] .event-title-full {
     font-weight: 700;
 }
@@ -719,7 +712,7 @@ body {
 }
 
 .event-date-full {
-    font-family: "Gotu", sans-serif;
+    font-family: "Thasadith", sans-serif;
     font-size: 1.5rem;
     color: rgba(255, 255, 255, 0.9);
     margin-bottom: 2rem;
@@ -728,7 +721,7 @@ body {
 
 .calendar-button {
     display: inline-block;
-    font-family: "Gotu", sans-serif;
+    font-family: "Thasadith", sans-serif;
     font-size: 1.1rem;
     color: white;
     background: rgba(255, 255, 255, 0.15);
@@ -748,7 +741,7 @@ body {
 }
 
 .event-details {
-    font-family: "Gotu", sans-serif;
+    font-family: "Thasadith", sans-serif;
     font-size: 1.2rem;
     line-height: 1.8;
     color: rgba(255, 255, 255, 0.85);
