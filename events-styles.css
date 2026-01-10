@@ -732,7 +732,9 @@ body {
 .polaroid-photos {
     display: flex;
     gap: 2rem;
-    margin-top: 2rem;
+    position: absolute;
+    bottom: 4rem;
+    right: 4rem;
 }
 
 .polaroid {
