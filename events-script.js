@@ -289,6 +289,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 selectedStyle = 'craft';
                 updateStyleButtons();
                 clearImagePreviews();
+                
+                // Set default outdoor images if outdoor style is selected
+                applyStyleDefaults();
+                
                 adminModal.classList.add('active');
             });
         }
@@ -367,12 +371,45 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         
+        // Default outdoor/leafy images
+        const outdoorDefaults = {
+            backgroundImage: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2071',
+            polaroid1: 'https://images.unsplash.com/photo-1502082553048-f009c37129b9?q=80&w=2070',
+            polaroid2: 'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?q=80&w=2141'
+        };
+        
+        // Apply style-specific defaults
+        function applyStyleDefaults() {
+            if (selectedStyle === 'outdoor') {
+                document.getElementById('backgroundImage').value = outdoorDefaults.backgroundImage;
+                document.getElementById('polaroid1').value = outdoorDefaults.polaroid1;
+                document.getElementById('polaroid2').value = outdoorDefaults.polaroid2;
+                
+                // Show previews
+                const bgPreview = document.getElementById('backgroundImagePreview');
+                const p1Preview = document.getElementById('polaroid1Preview');
+                const p2Preview = document.getElementById('polaroid2Preview');
+                
+                bgPreview.style.backgroundImage = `url('${outdoorDefaults.backgroundImage}')`;
+                bgPreview.classList.add('show');
+                p1Preview.style.backgroundImage = `url('${outdoorDefaults.polaroid1}')`;
+                p1Preview.classList.add('show');
+                p2Preview.style.backgroundImage = `url('${outdoorDefaults.polaroid2}')`;
+                p2Preview.classList.add('show');
+            }
+        }
+        
         // Style buttons
         const styleBtns = document.querySelectorAll('.style-btn');
         styleBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 selectedStyle = btn.dataset.style;
                 updateStyleButtons();
+                
+                // Apply defaults when style changes (only when adding new event)
+                if (!editingEventId) {
+                    applyStyleDefaults();
+                }
             });
         });
         
