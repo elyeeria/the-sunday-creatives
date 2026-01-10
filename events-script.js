@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 backgroundImage,
                 polaroid1,
                 polaroid2,
-                style: 'minimal'
+                style: 'craft'
             };
         });
         
@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const modalTitle = document.getElementById('modalTitle');
         
         let editingEventId = null;
-        let selectedStyle = 'minimal';
+        let selectedStyle = 'craft';
         
         // Show admin controls
         if (adminControls) {
@@ -286,8 +286,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 editingEventId = null;
                 modalTitle.textContent = 'Add New Event';
                 eventForm.reset();
-                selectedStyle = 'minimal';
+                selectedStyle = 'craft';
                 updateStyleButtons();
+                clearImagePreviews();
                 adminModal.classList.add('active');
             });
         }
@@ -305,6 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const closeModalHandler = () => {
             adminModal.classList.remove('active');
             eventForm.reset();
+            clearImagePreviews();
         };
         
         if (closeModal) closeModal.addEventListener('click', closeModalHandler);
@@ -316,6 +318,54 @@ document.addEventListener('DOMContentLoaded', () => {
                 closeModalHandler();
             }
         });
+        
+        // Image upload handlers
+        setupImageUpload('backgroundImageFile', 'backgroundImage', 'backgroundImagePreview');
+        setupImageUpload('polaroid1File', 'polaroid1', 'polaroid1Preview');
+        setupImageUpload('polaroid2File', 'polaroid2', 'polaroid2Preview');
+        
+        function setupImageUpload(fileInputId, urlInputId, previewId) {
+            const fileInput = document.getElementById(fileInputId);
+            const urlInput = document.getElementById(urlInputId);
+            const preview = document.getElementById(previewId);
+            
+            if (!fileInput || !urlInput || !preview) return;
+            
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const dataUrl = event.target.result;
+                        urlInput.value = dataUrl;
+                        preview.style.backgroundImage = `url('${dataUrl}')`;
+                        preview.classList.add('show');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Show preview when URL is entered
+            urlInput.addEventListener('input', () => {
+                if (urlInput.value) {
+                    preview.style.backgroundImage = `url('${urlInput.value}')`;
+                    preview.classList.add('show');
+                } else {
+                    preview.classList.remove('show');
+                }
+            });
+        }
+        
+        function clearImagePreviews() {
+            const previews = ['backgroundImagePreview', 'polaroid1Preview', 'polaroid2Preview'];
+            previews.forEach(id => {
+                const preview = document.getElementById(id);
+                if (preview) {
+                    preview.classList.remove('show');
+                    preview.style.backgroundImage = '';
+                }
+            });
+        }
         
         // Style buttons
         const styleBtns = document.querySelectorAll('.style-btn');
@@ -370,7 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             editingEventId = eventId;
             modalTitle.textContent = 'Edit Event';
-            selectedStyle = event.style || 'minimal';
+            selectedStyle = event.style || 'craft';
             
             document.getElementById('eventTitle').value = event.title;
             document.getElementById('eventDate').value = event.date;
@@ -378,6 +428,24 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('backgroundImage').value = event.backgroundImage;
             document.getElementById('polaroid1').value = event.polaroid1;
             document.getElementById('polaroid2').value = event.polaroid2;
+            
+            // Show image previews
+            const bgPreview = document.getElementById('backgroundImagePreview');
+            const p1Preview = document.getElementById('polaroid1Preview');
+            const p2Preview = document.getElementById('polaroid2Preview');
+            
+            if (event.backgroundImage) {
+                bgPreview.style.backgroundImage = `url('${event.backgroundImage}')`;
+                bgPreview.classList.add('show');
+            }
+            if (event.polaroid1) {
+                p1Preview.style.backgroundImage = `url('${event.polaroid1}')`;
+                p1Preview.classList.add('show');
+            }
+            if (event.polaroid2) {
+                p2Preview.style.backgroundImage = `url('${event.polaroid2}')`;
+                p2Preview.classList.add('show');
+            }
             
             updateStyleButtons();
             adminModal.classList.add('active');

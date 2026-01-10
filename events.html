@@ -198,10 +198,10 @@
                     <div class="form-group">
                         <label>Event Style</label>
                         <div class="style-options">
-                            <button type="button" class="style-btn" data-style="minimal">Minimal</button>
-                            <button type="button" class="style-btn" data-style="vibrant">Vibrant</button>
+                            <button type="button" class="style-btn" data-style="craft">Craft</button>
+                            <button type="button" class="style-btn" data-style="cinematic">Cinematic</button>
+                            <button type="button" class="style-btn" data-style="outdoor">Outdoor</button>
                             <button type="button" class="style-btn" data-style="elegant">Elegant</button>
-                            <button type="button" class="style-btn" data-style="bold">Bold</button>
                         </div>
                     </div>
                     <div class="form-group">
@@ -217,16 +217,52 @@
                         <textarea id="eventDetails" rows="4" required></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="backgroundImage">Background Image URL</label>
-                        <input type="url" id="backgroundImage" required>
+                        <label for="backgroundImage">Background Image</label>
+                        <div class="image-input-group">
+                            <input type="url" id="backgroundImage" placeholder="Enter URL or upload image">
+                            <input type="file" id="backgroundImageFile" accept="image/*" style="display: none;">
+                            <button type="button" class="upload-btn" onclick="document.getElementById('backgroundImageFile').click()">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                                Upload
+                            </button>
+                        </div>
+                        <div class="image-preview" id="backgroundImagePreview"></div>
                     </div>
                     <div class="form-group">
-                        <label for="polaroid1">Polaroid Image 1 URL</label>
-                        <input type="url" id="polaroid1" required>
+                        <label for="polaroid1">Polaroid Image 1</label>
+                        <div class="image-input-group">
+                            <input type="url" id="polaroid1" placeholder="Enter URL or upload image">
+                            <input type="file" id="polaroid1File" accept="image/*" style="display: none;">
+                            <button type="button" class="upload-btn" onclick="document.getElementById('polaroid1File').click()">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                                Upload
+                            </button>
+                        </div>
+                        <div class="image-preview" id="polaroid1Preview"></div>
                     </div>
                     <div class="form-group">
-                        <label for="polaroid2">Polaroid Image 2 URL</label>
-                        <input type="url" id="polaroid2" required>
+                        <label for="polaroid2">Polaroid Image 2</label>
+                        <div class="image-input-group">
+                            <input type="url" id="polaroid2" placeholder="Enter URL or upload image">
+                            <input type="file" id="polaroid2File" accept="image/*" style="display: none;">
+                            <button type="button" class="upload-btn" onclick="document.getElementById('polaroid2File').click()">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                                Upload
+                            </button>
+                        </div>
+                        <div class="image-preview" id="polaroid2Preview"></div>
                     </div>
                     <div class="form-actions">
                         <button type="submit" class="submit-btn">Save Event</button>
