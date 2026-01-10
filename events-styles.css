@@ -722,6 +722,7 @@ body {
     cursor: pointer;
     text-decoration: underline;
     margin-left: 0.3rem;
+    font-weight: bold;
 }
 
 .event-details.collapsed:hover::after {
