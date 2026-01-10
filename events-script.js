@@ -234,11 +234,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         <p class="event-details">${event.details}</p>
                     </div>
                     <div class="polaroid-photos">
-                        <div class="polaroid" style="background-image: url('${event.polaroid1}');" loading="lazy">
-                            <div class="polaroid-frame"></div>
+                        <div class="polaroid">
+                            <div class="polaroid-frame" style="background-image: url('${event.polaroid1}');"></div>
                         </div>
-                        <div class="polaroid" style="background-image: url('${event.polaroid2}');" loading="lazy">
-                            <div class="polaroid-frame"></div>
+                        <div class="polaroid">
+                            <div class="polaroid-frame" style="background-image: url('${event.polaroid2}');"></div>
                         </div>
                     </div>
                 </div>
