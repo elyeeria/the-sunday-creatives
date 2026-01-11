@@ -23,6 +23,12 @@ body {
     font-style: normal;
 }
 
+.event-card-full[data-style="cinematic"] .event-title-full {
+    font-family: "Pirata One", system-ui;
+    font-weight: 400;
+    font-style: normal;
+}
+
 .event-card-full[data-style="outdoor"] .event-title-full {
     font-weight: 700;
 }
