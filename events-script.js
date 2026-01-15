@@ -222,17 +222,12 @@ document.addEventListener('DOMContentLoaded', () => {
             day: 'numeric' 
         });
         
-        // Check if background is video
-        const isVideo = event.backgroundImage && (
-            event.backgroundImage.includes('.mp4') || 
-            event.backgroundImage.includes('.webm') || 
-            event.backgroundImage.includes('.mov') ||
-            event.backgroundImage.startsWith('data:video')
-        );
+        // Check if background is video (optimized regex)
+        const isVideo = event.backgroundImage && /\.(mp4|webm|mov)$|^data:video/i.test(event.backgroundImage);
         
         const backgroundHTML = isVideo 
-            ? `<video class="card-background" autoplay muted loop playsinline style="object-fit: cover; width: 100%; height: 100%; position: absolute; top: 0; left: 0;"><source src="${event.backgroundImage}" type="video/mp4"></video>`
-            : `<div class="card-background" style="background-image: url('${event.backgroundImage}');" loading="lazy"></div>`;
+            ? `<video class="card-background" autoplay muted loop playsinline preload="metadata" style="object-fit: cover; width: 100%; height: 100%; position: absolute; top: 0; left: 0;"><source src="${event.backgroundImage}" type="video/mp4"></video>`
+            : `<div class="card-background" style="background-image: url('${event.backgroundImage}');"></div>`;
         
         return `
             <div class="event-card-full" data-index="${index}" data-event-id="${event.id}" data-style="${event.style || 'craft'}">
@@ -318,19 +313,15 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
         
-        // Close modal
+        // Close modal (using event delegation)
         const closeModalHandler = () => {
             adminModal.classList.remove('active');
             eventForm.reset();
             clearImagePreviews();
         };
         
-        if (closeModal) closeModal.addEventListener('click', closeModalHandler);
-        if (cancelBtn) cancelBtn.addEventListener('click', closeModalHandler);
-        
-        // Click outside modal to close
         adminModal.addEventListener('click', (e) => {
-            if (e.target === adminModal) {
+            if (e.target === adminModal || e.target.closest('#closeModal') || e.target.closest('#cancelBtn')) {
                 closeModalHandler();
             }
         });

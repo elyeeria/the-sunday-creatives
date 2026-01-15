@@ -32,8 +32,7 @@ body {
 }
 
 .event-card-full[data-style="cinematic"] .event-date-full,
-.event-card-full[data-style="cinematic"] .event-details,
-.event-card-full[data-style="cinematic"] .calendar-button {
+.event-card-full[data-style="cinematic"] .event-details {
     font-family: "Estonia", cursive;
     font-weight: 400;
     font-style: normal;
@@ -608,6 +607,7 @@ body {
     cursor: pointer;
     will-change: transform, opacity;
     backface-visibility: hidden;
+    contain: layout style paint;
 }
 
 /* Card stacking effect */
