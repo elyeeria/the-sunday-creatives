@@ -37,6 +37,18 @@ body {
     font-style: normal;
 }
 
+.event-card-full[data-style="cinematic"] .event-date-full {
+    font-size: 2.25rem;
+}
+
+.event-card-full[data-style="cinematic"] .event-details {
+    font-size: 1.8rem;
+}
+
+.event-card-full[data-style="cinematic"] .calendar-button {
+    font-size: 1.65rem;
+}
+
 .event-card-full[data-style="outdoor"] .event-title-full {
     font-weight: 700;
 }

@@ -33,8 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentIndex = 0;
     let totalCards = cards.length;
     
-    // If we have saved events and in admin mode, render them
-    if (events && isAdmin) {
+    // If we have saved events, render them for all users
+    if (events) {
         // Auto-archive past events
         const today = new Date();
         today.setHours(0, 0, 0, 0);
