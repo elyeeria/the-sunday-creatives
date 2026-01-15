@@ -48,6 +48,7 @@ body {
 
 .event-card-full[data-style="outdoor"] .event-title-full {
     font-weight: 700;
+    letter-spacing: 0.15em;
 }
 
 .event-card-full[data-style="outdoor"] .event-details {
