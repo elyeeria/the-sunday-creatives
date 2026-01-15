@@ -222,9 +222,21 @@ document.addEventListener('DOMContentLoaded', () => {
             day: 'numeric' 
         });
         
+        // Check if background is video
+        const isVideo = event.backgroundImage && (
+            event.backgroundImage.includes('.mp4') || 
+            event.backgroundImage.includes('.webm') || 
+            event.backgroundImage.includes('.mov') ||
+            event.backgroundImage.startsWith('data:video')
+        );
+        
+        const backgroundHTML = isVideo 
+            ? `<video class="card-background" autoplay muted loop playsinline style="object-fit: cover; width: 100%; height: 100%; position: absolute; top: 0; left: 0;"><source src="${event.backgroundImage}" type="video/mp4"></video>`
+            : `<div class="card-background" style="background-image: url('${event.backgroundImage}');" loading="lazy"></div>`;
+        
         return `
             <div class="event-card-full" data-index="${index}" data-event-id="${event.id}" data-style="${event.style || 'craft'}">
-                <div class="card-background" style="background-image: url('${event.backgroundImage}');" loading="lazy"></div>
+                ${backgroundHTML}
                 <div class="card-overlay"></div>
                 <div class="card-content">
                     <div class="card-main-info">
@@ -385,6 +397,13 @@ document.addEventListener('DOMContentLoaded', () => {
             polaroid2: 'https://images.unsplash.com/photo-1452860606245-08befc0ff44b?q=80&w=2070'
         };
         
+        // Default cinematic/late night movie theme
+        const cinematicDefaults = {
+            backgroundImage: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=2070',
+            polaroid1: 'https://images.unsplash.com/photo-1574267432644-f610fa948a05?q=80&w=2071',
+            polaroid2: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=2125'
+        };
+        
         // Apply style-specific defaults
         function applyStyleDefaults() {
             if (selectedStyle === 'outdoor') {
@@ -418,6 +437,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 p1Preview.style.backgroundImage = `url('${craftDefaults.polaroid1}')`;
                 p1Preview.classList.add('show');
                 p2Preview.style.backgroundImage = `url('${craftDefaults.polaroid2}')`;
+                p2Preview.classList.add('show');
+            } else if (selectedStyle === 'cinematic') {
+                document.getElementById('backgroundImage').value = cinematicDefaults.backgroundImage;
+                document.getElementById('polaroid1').value = cinematicDefaults.polaroid1;
+                document.getElementById('polaroid2').value = cinematicDefaults.polaroid2;
+                
+                // Show previews
+                const bgPreview = document.getElementById('backgroundImagePreview');
+                const p1Preview = document.getElementById('polaroid1Preview');
+                const p2Preview = document.getElementById('polaroid2Preview');
+                
+                bgPreview.style.backgroundImage = `url('${cinematicDefaults.backgroundImage}')`;
+                bgPreview.classList.add('show');
+                p1Preview.style.backgroundImage = `url('${cinematicDefaults.polaroid1}')`;
+                p1Preview.classList.add('show');
+                p2Preview.style.backgroundImage = `url('${cinematicDefaults.polaroid2}')`;
                 p2Preview.classList.add('show');
             }
         }
