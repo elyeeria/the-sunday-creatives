@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Load events from localStorage or get from existing HTML
     let events = JSON.parse(localStorage.getItem('events')) || null;
+    const adminInitialized = localStorage.getItem('adminInitialized') === 'true';
     
     const cardsStack = document.querySelector('.cards-stack');
     let cards = Array.from(document.querySelectorAll('.event-card-full'));
@@ -33,8 +34,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentIndex = 0;
     let totalCards = cards.length;
     
-    // If we have saved events, render them for all users
-    if (events) {
+    // If admin has initialized or we have saved events, render them for all users
+    if (adminInitialized || events) {
+        // Initialize events array if null
+        if (!events) {
+            events = [];
+        }
+        
         // Auto-archive past events
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -51,14 +57,30 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         saveEvents();
-        renderEvents();
         
-        // Update cards reference after rendering
-        cards = Array.from(document.querySelectorAll('.event-card-full'));
-        totalCards = cards.length;
-    } else if (!events) {
-        // First time load - save existing HTML cards to localStorage
+        // Render events or show empty state
+        if (events.length > 0) {
+            renderEvents();
+            
+            // Update cards reference after rendering
+            cards = Array.from(document.querySelectorAll('.event-card-full'));
+            totalCards = cards.length;
+        } else if (adminInitialized) {
+            // Show empty state when admin has initialized but no events exist
+            cardsStack.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: white; font-size: 1.5rem; font-family: Gotu, sans-serif;">No upcoming events</div>';
+            cards = [];
+            totalCards = 0;
+        }
+    } else if (!events && !adminInitialized) {
+        // First time load - save existing HTML cards to localStorage only if admin hasn't initialized
         saveExistingCardsToLocalStorage();
+        // Reload events after saving and initialize
+        events = JSON.parse(localStorage.getItem('events')) || [];
+        if (events.length > 0) {
+            renderEvents();
+            cards = Array.from(document.querySelectorAll('.event-card-full'));
+            totalCards = cards.length;
+        }
     }
     
     // Admin UI setup
@@ -134,6 +156,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     setupCardClickHandlers();
+    
+    // Initialize card positions on load
+    if (totalCards > 0) {
+        updateCardPositions();
+    }
 
     // Touch/swipe support for mobile
     let touchStartX = 0;
@@ -166,9 +193,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const dateText = card.querySelector('.event-date-full')?.textContent || '';
             const details = card.querySelector('.event-details')?.textContent || '';
             const backgroundImage = card.querySelector('.card-background')?.style.backgroundImage?.match(/url\(['"]?([^'"]+)['"]?\)/)?.[1] || '';
-            const polaroids = card.querySelectorAll('.polaroid');
-            const polaroid1 = polaroids[0]?.style.backgroundImage?.match(/url\(['"]?([^'"]+)['"]?\)/)?.[1] || '';
-            const polaroid2 = polaroids[1]?.style.backgroundImage?.match(/url\(['"]?([^'"]+)['"]?\)/)?.[1] || '';
+            const polaroidFrames = card.querySelectorAll('.polaroid-frame');
+            const polaroid1 = polaroidFrames[0]?.style.backgroundImage?.match(/url\(['"]?([^'"]+)['"]?\)/)?.[1] || '';
+            const polaroid2 = polaroidFrames[1]?.style.backgroundImage?.match(/url\(['"]?([^'"]+)['"]?\)/)?.[1] || '';
             
             // Parse date from text like "January 15, 2026"
             const date = new Date(dateText).toISOString().split('T')[0];
@@ -256,6 +283,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Save events to localStorage
     function saveEvents() {
         localStorage.setItem('events', JSON.stringify(events));
+        // Mark that admin has initialized the system
+        localStorage.setItem('adminInitialized', 'true');
     }
 
     // Archive event
