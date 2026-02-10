@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Storage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+        button:hover {
+            background: #764ba2;
+        }
+        .info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f0f0f0;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Storage Management</h1>
+        <p>Use this tool to reset localStorage if the site isn't loading properly.</p>
+        
+        <button onclick="clearStorage()">Clear All Storage</button>
+        <button onclick="viewStorage()">View Storage</button>
+        <button onclick="window.location.href='events.html'">Go to Events</button>
+        
+        <div id="info" class="info" style="display: none;"></div>
+    </div>
+
+    <script>
+        function clearStorage() {
+            localStorage.clear();
+            sessionStorage.clear();
+            alert('Storage cleared! The site will now load with default hardcoded events.');
+            viewStorage();
+        }
+
+        function viewStorage() {
+            const info = document.getElementById('info');
+            const events = localStorage.getItem('events');
+            const adminInit = localStorage.getItem('adminInitialized');
+            const archived = localStorage.getItem('archivedEvents');
+            
+            let html = '<h3>Current Storage State:</h3>';
+            html += '<p><strong>Admin Initialized:</strong> ' + (adminInit || 'false') + '</p>';
+            
+            if (events) {
+                const eventsArray = JSON.parse(events);
+                html += '<p><strong>Events Count:</strong> ' + eventsArray.length + '</p>';
+                html += '<p><strong>Events:</strong></p><ul>';
+                eventsArray.forEach(e => {
+                    html += '<li>' + e.title + ' - ' + e.date + '</li>';
+                });
+                html += '</ul>';
+            } else {
+                html += '<p><strong>Events:</strong> None (will load hardcoded cards)</p>';
+            }
+            
+            if (archived) {
+                const archivedArray = JSON.parse(archived);
+                html += '<p><strong>Archived Events:</strong> ' + archivedArray.length + '</p>';
+            }
+            
+            info.innerHTML = html;
+            info.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

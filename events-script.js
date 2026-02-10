@@ -1,4 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Debug logging
+    console.log('Events page loaded');
+    console.log('localStorage events:', localStorage.getItem('events'));
+    console.log('localStorage adminInitialized:', localStorage.getItem('adminInitialized'));
+    
     // Check admin authentication
     const urlParams = new URLSearchParams(window.location.search);
     const isAdminView = urlParams.get('admin') === 'true';
@@ -36,30 +41,39 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // If admin has initialized or we have saved events, render them for all users
     if (adminInitialized || events) {
+        console.log('Branch 1: adminInitialized or events exist');
+        console.log('Events:', events);
+        console.log('adminInitialized:', adminInitialized);
+        
         // Initialize events array if null
         if (!events) {
             events = [];
+            console.log('Events was null, initialized to empty array');
         }
         
         // Auto-archive past events
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         
+        const beforeFilter = events.length;
         events = events.filter(event => {
             const eventDate = new Date(event.date);
             eventDate.setHours(0, 0, 0, 0);
             
             if (eventDate < today) {
                 archiveEvent(event);
+                console.log('Archived past event:', event.title);
                 return false;
             }
             return true;
         });
+        console.log('Filtered events: ' + beforeFilter + ' -> ' + events.length);
         
         saveEvents();
         
         // Render events or show empty state
         if (events.length > 0) {
+            console.log('Rendering ' + events.length + ' events');
             renderEvents();
             
             // Update cards reference after rendering
@@ -67,21 +81,33 @@ document.addEventListener('DOMContentLoaded', () => {
             totalCards = cards.length;
         } else if (adminInitialized) {
             // Show empty state when admin has initialized but no events exist
+            console.log('Admin initialized but no events - showing empty state');
             cardsStack.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: white; font-size: 1.5rem; font-family: Gotu, sans-serif;">No upcoming events</div>';
             cards = [];
             totalCards = 0;
         }
     } else if (!events && !adminInitialized) {
         // First time load - save existing HTML cards to localStorage only if admin hasn't initialized
+        console.log('Branch 2: First time load - saving hardcoded cards');
         saveExistingCardsToLocalStorage();
         // Reload events after saving and initialize
         events = JSON.parse(localStorage.getItem('events')) || [];
+        console.log('Loaded ' + events.length + ' events from localStorage after saving');
         if (events.length > 0) {
+            console.log('Rendering newly saved events');
             renderEvents();
             cards = Array.from(document.querySelectorAll('.event-card-full'));
             totalCards = cards.length;
         }
+    } else if (!adminInitialized && (!events || events.length === 0)) {
+        // Fallback: if no events and admin hasn't initialized, use hardcoded cards
+        console.log('Branch 3: Fallback - using hardcoded HTML cards');
+        cards = Array.from(document.querySelectorAll('.event-card-full'));
+        totalCards = cards.length;
+        console.log('Found ' + totalCards + ' hardcoded cards');
     }
+    
+    console.log('Final state - totalCards:', totalCards);
     
     // Admin UI setup
     if (isAdmin) {
@@ -140,6 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Click on stacked cards to bring forward
     function setupCardClickHandlers() {
+        console.log('Setting up click handlers for ' + cards.length + ' cards');
         cards.forEach((card) => {
             card.addEventListener('click', (e) => {
                 // Don't navigate if clicking admin buttons
@@ -155,11 +182,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    setupCardClickHandlers();
-    
-    // Initialize card positions on load
     if (totalCards > 0) {
+        setupCardClickHandlers();
+        console.log('Initializing card positions for ' + totalCards + ' cards');
         updateCardPositions();
+    } else {
+        console.warn('No cards to display!');
     }
 
     // Touch/swipe support for mobile
