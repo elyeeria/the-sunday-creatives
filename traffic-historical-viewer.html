@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historical Traffic Viewer</title>
+    <style>
+        :root {
+            --bg: #091018;
+            --panel: #111d2a;
+            --panel-2: #162738;
+            --accent: #2ec4b6;
+            --accent-2: #ff9f1c;
+            --text: #e8f0f8;
+            --muted: #9bb0c6;
+            --danger: #ff5d73;
+            --ok: #2ec27e;
+            --line: #2b4158;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(1200px 700px at 85% -10%, rgba(46, 196, 182, 0.25), transparent 60%),
+                radial-gradient(1200px 700px at -10% 120%, rgba(255, 159, 28, 0.2), transparent 55%),
+                var(--bg);
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .shell {
+            max-width: 1080px;
+            margin: 0 auto;
+            display: grid;
+            gap: 16px;
+        }
+
+        .card {
+            background: linear-gradient(165deg, var(--panel), var(--panel-2));
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 18px;
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+        }
+
+        h1 {
+            margin: 0 0 6px;
+            font-size: clamp(1.4rem, 3.6vw, 2rem);
+            letter-spacing: 0.02em;
+        }
+
+        .sub {
+            color: var(--muted);
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .notice {
+            margin-top: 10px;
+            color: #d9ebff;
+            background: rgba(46, 196, 182, 0.08);
+            border: 1px solid rgba(46, 196, 182, 0.35);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 0.9rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 12px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .col-12 { grid-column: span 12; }
+        .col-6 { grid-column: span 6; }
+        .col-4 { grid-column: span 4; }
+        .col-3 { grid-column: span 3; }
+
+        @media (max-width: 860px) {
+            .col-6, .col-4, .col-3 { grid-column: span 12; }
+        }
+
+        label {
+            font-size: 0.86rem;
+            color: var(--muted);
+            letter-spacing: 0.02em;
+        }
+
+        input, button, textarea {
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            background: #0d1824;
+            color: var(--text);
+            font: inherit;
+            padding: 10px 12px;
+        }
+
+        input:focus, textarea:focus {
+            outline: 2px solid rgba(46, 196, 182, 0.5);
+            border-color: var(--accent);
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn {
+            cursor: pointer;
+            border: 1px solid transparent;
+            font-weight: 600;
+            transition: transform 0.12s ease, opacity 0.12s ease;
+        }
+
+        .btn:hover { transform: translateY(-1px); }
+        .btn:active { transform: translateY(0); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), #25a69a);
+            color: #00251f;
+        }
+
+        .btn-secondary {
+            background: #132232;
+            border-color: var(--line);
+            color: var(--text);
+        }
+
+        .status {
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .status.show { display: block; }
+        .status.ok { background: rgba(46, 194, 126, 0.12); border: 1px solid rgba(46, 194, 126, 0.45); }
+        .status.error { background: rgba(255, 93, 115, 0.12); border: 1px solid rgba(255, 93, 115, 0.5); }
+
+        pre {
+            margin: 0;
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            background: #0a121c;
+            color: #d7e8f7;
+            padding: 12px;
+            max-height: 420px;
+            overflow: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .small {
+            color: var(--muted);
+            font-size: 0.84rem;
+        }
+
+        .inline-check {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            user-select: none;
+        }
+
+        .inline-check input {
+            width: 16px;
+            height: 16px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .kpi {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(120px, 1fr));
+            gap: 8px;
+        }
+
+        .kpi-item {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 8px 10px;
+            background: rgba(9, 16, 24, 0.55);
+        }
+
+        .kpi-label {
+            color: var(--muted);
+            font-size: 0.74rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .kpi-value {
+            font-size: 0.95rem;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <main class="shell">
+        <section class="card">
+            <h1>NSW Historical Traffic Viewer</h1>
+            <p class="sub">Standalone API client for POST /v1/traffic/historicaldata</p>
+            <p class="notice">
+                This page runs independently and does not modify your existing files. If the browser blocks cross-origin requests,
+                enter a proxy base URL below (for example, your own backend endpoint).
+            </p>
+        </section>
+
+        <section class="card">
+            <form id="trafficForm" class="grid">
+                <div class="field col-12">
+                    <label for="apiKey">API key token</label>
+                    <input id="apiKey" name="apiKey" type="password" placeholder="Paste your token only (without the apikey prefix)" required>
+                </div>
+
+                <div class="field col-12">
+                    <label for="proxyBase">Optional proxy base URL</label>
+                    <input id="proxyBase" name="proxyBase" type="url" placeholder="https://your-proxy.example.com">
+                    <span class="small">Leave blank to call https://api.transport.nsw.gov.au directly.</span>
+                </div>
+
+                <div class="field col-6">
+                    <label for="created">Created (start)</label>
+                    <input id="created" name="created" type="datetime-local" required>
+                </div>
+
+                <div class="field col-6">
+                    <label for="end">End</label>
+                    <input id="end" name="end" type="datetime-local" required>
+                </div>
+
+                <div class="field col-4">
+                    <label for="latitude">Latitude</label>
+                    <input id="latitude" name="latitude" type="number" step="0.00001" min="-90" max="90" value="-33.86734" required>
+                </div>
+
+                <div class="field col-4">
+                    <label for="longitude">Longitude</label>
+                    <input id="longitude" name="longitude" type="number" step="0.00001" min="-180" max="180" value="151.20823" required>
+                </div>
+
+                <div class="field col-4">
+                    <label for="radius">Radius (km)</label>
+                    <input id="radius" name="radius" type="number" step="0.1" min="0" max="500" value="1" required>
+                </div>
+
+                <div class="field col-12">
+                    <label class="inline-check" for="showHistory">
+                        <input id="showHistory" name="showHistory" type="checkbox" checked>
+                        <span>showHistory = true</span>
+                    </label>
+                </div>
+
+                <div class="field col-12">
+                    <label for="payloadPreview">Request payload preview</label>
+                    <textarea id="payloadPreview" rows="6" readonly></textarea>
+                </div>
+
+                <div class="field col-12 row">
+                    <button class="btn btn-primary" type="submit" id="submitBtn">Fetch historical data</button>
+                    <button class="btn btn-secondary" type="button" id="copyCurlBtn">Copy cURL</button>
+                    <a id="downloadLink" class="btn btn-secondary hidden" href="#" download>Download response</a>
+                </div>
+            </form>
+        </section>
+
+        <section class="card">
+            <div id="status" class="status"></div>
+            <div class="kpi" aria-live="polite">
+                <div class="kpi-item">
+                    <div class="kpi-label">HTTP Status</div>
+                    <div id="statusCode" class="kpi-value">-</div>
+                </div>
+                <div class="kpi-item">
+                    <div class="kpi-label">Content-Type</div>
+                    <div id="contentType" class="kpi-value">-</div>
+                </div>
+                <div class="kpi-item">
+                    <div class="kpi-label">File Size</div>
+                    <div id="fileSize" class="kpi-value">-</div>
+                </div>
+            </div>
+            <div style="height: 10px;"></div>
+            <pre id="responseOutput">Response output will appear here.</pre>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script>
+        (function() {
+            const endpointPath = "/v1/traffic/historicaldata";
+            const directHost = "https://api.transport.nsw.gov.au";
+
+            const form = document.getElementById("trafficForm");
+            const apiKeyInput = document.getElementById("apiKey");
+            const proxyBaseInput = document.getElementById("proxyBase");
+            const createdInput = document.getElementById("created");
+            const endInput = document.getElementById("end");
+            const latInput = document.getElementById("latitude");
+            const lonInput = document.getElementById("longitude");
+            const radiusInput = document.getElementById("radius");
+            const showHistoryInput = document.getElementById("showHistory");
+            const payloadPreview = document.getElementById("payloadPreview");
+            const statusBox = document.getElementById("status");
+            const output = document.getElementById("responseOutput");
+            const statusCode = document.getElementById("statusCode");
+            const contentTypeEl = document.getElementById("contentType");
+            const fileSizeEl = document.getElementById("fileSize");
+            const downloadLink = document.getElementById("downloadLink");
+            const submitBtn = document.getElementById("submitBtn");
+            const copyCurlBtn = document.getElementById("copyCurlBtn");
+
+            let objectUrl = null;
+
+            function pad(n) {
+                return String(n).padStart(2, "0");
+            }
+
+            function toIsoWithOffset(localValue) {
+                const d = new Date(localValue);
+                if (Number.isNaN(d.getTime())) {
+                    return null;
+                }
+
+                const yyyy = d.getFullYear();
+                const mm = pad(d.getMonth() + 1);
+                const dd = pad(d.getDate());
+                const hh = pad(d.getHours());
+                const mi = pad(d.getMinutes());
+                const ss = pad(d.getSeconds());
+
+                const offsetMin = -d.getTimezoneOffset();
+                const sign = offsetMin >= 0 ? "+" : "-";
+                const abs = Math.abs(offsetMin);
+                const oh = pad(Math.floor(abs / 60));
+                const om = pad(abs % 60);
+
+                return yyyy + "-" + mm + "-" + dd + "T" + hh + ":" + mi + ":" + ss + ".000" + sign + oh + ":" + om;
+            }
+
+            function bytesToHuman(size) {
+                if (!Number.isFinite(size) || size < 0) return "-";
+                if (size < 1024) return size + " B";
+                if (size < 1024 * 1024) return (size / 1024).toFixed(2) + " KB";
+                return (size / (1024 * 1024)).toFixed(2) + " MB";
+            }
+
+            function buildPayload() {
+                const payload = {
+                    created: toIsoWithOffset(createdInput.value),
+                    end: toIsoWithOffset(endInput.value),
+                    latitude: Number(latInput.value),
+                    longitude: Number(lonInput.value),
+                    radius: Number(radiusInput.value),
+                    showHistory: Boolean(showHistoryInput.checked)
+                };
+                return payload;
+            }
+
+            function updatePayloadPreview() {
+                payloadPreview.value = JSON.stringify(buildPayload(), null, 2);
+            }
+
+            function validate(payload) {
+                if (!payload.created || !payload.end) {
+                    return "Both start and end date-times must be valid.";
+                }
+                if (payload.latitude < -90 || payload.latitude > 90) {
+                    return "Latitude must be between -90 and 90.";
+                }
+                if (payload.longitude < -180 || payload.longitude > 180) {
+                    return "Longitude must be between -180 and 180.";
+                }
+                if (payload.radius < 0 || payload.radius > 500) {
+                    return "Radius must be between 0 and 500.";
+                }
+                return null;
+            }
+
+            function setStatus(message, isError) {
+                statusBox.textContent = message;
+                statusBox.classList.add("show");
+                statusBox.classList.toggle("error", Boolean(isError));
+                statusBox.classList.toggle("ok", !isError);
+            }
+
+            function clearDownload() {
+                if (objectUrl) {
+                    URL.revokeObjectURL(objectUrl);
+                    objectUrl = null;
+                }
+                downloadLink.classList.add("hidden");
+                downloadLink.removeAttribute("href");
+            }
+
+            function extractFilename(disposition) {
+                if (!disposition) return null;
+                const match = disposition.match(/filename\*=UTF-8''([^;]+)|filename="?([^";]+)"?/i);
+                const fileNamePart = match ? (match[1] || match[2]) : null;
+                if (!fileNamePart) return null;
+                try {
+                    return decodeURIComponent(fileNamePart);
+                } catch (_err) {
+                    return fileNamePart;
+                }
+            }
+
+            function sanitizeSheetName(name) {
+                return String(name || "TrafficData")
+                    .replace(/[\\\/?*\[\]:]/g, " ")
+                    .trim()
+                    .slice(0, 31) || "TrafficData";
+            }
+
+            function flattenObject(input, prefix, out) {
+                if (input === null || input === undefined) {
+                    out[prefix] = "";
+                    return;
+                }
+
+                if (Array.isArray(input)) {
+                    if (input.length === 0) {
+                        out[prefix] = "[]";
+                        return;
+                    }
+                    for (let i = 0; i < input.length; i += 1) {
+                        const key = prefix ? prefix + "[" + i + "]" : "[" + i + "]";
+                        flattenObject(input[i], key, out);
+                    }
+                    return;
+                }
+
+                if (typeof input === "object") {
+                    const keys = Object.keys(input);
+                    if (keys.length === 0) {
+                        out[prefix] = "{}";
+                        return;
+                    }
+                    for (const key of keys) {
+                        const nextPrefix = prefix ? prefix + "." + key : key;
+                        flattenObject(input[key], nextPrefix, out);
+                    }
+                    return;
+                }
+
+                out[prefix] = input;
+            }
+
+            function normalizeRowsFromJson(data) {
+                if (Array.isArray(data)) {
+                    return data.map((item, index) => {
+                        if (item && typeof item === "object") {
+                            const flat = {};
+                            flattenObject(item, "", flat);
+                            return flat;
+                        }
+                        return { value: item, row: index + 1 };
+                    });
+                }
+
+                if (data && typeof data === "object") {
+                    const topLevelKeys = Object.keys(data);
+                    if (topLevelKeys.length === 1 && Array.isArray(data[topLevelKeys[0]])) {
+                        return normalizeRowsFromJson(data[topLevelKeys[0]]);
+                    }
+                    const flat = {};
+                    flattenObject(data, "", flat);
+                    return [flat];
+                }
+
+                return [{ value: data }];
+            }
+
+            function parseCsvToRows(csvText) {
+                const lines = csvText
+                    .split(/\r?\n/)
+                    .map((line) => line.trim())
+                    .filter((line) => line.length > 0);
+
+                if (lines.length === 0) {
+                    return [];
+                }
+
+                const splitCsvLine = (line) => {
+                    const fields = [];
+                    let cur = "";
+                    let inQuotes = false;
+
+                    for (let i = 0; i < line.length; i += 1) {
+                        const ch = line[i];
+                        if (ch === '"') {
+                            if (inQuotes && line[i + 1] === '"') {
+                                cur += '"';
+                                i += 1;
+                            } else {
+                                inQuotes = !inQuotes;
+                            }
+                        } else if (ch === "," && !inQuotes) {
+                            fields.push(cur);
+                            cur = "";
+                        } else {
+                            cur += ch;
+                        }
+                    }
+                    fields.push(cur);
+                    return fields;
+                };
+
+                const headers = splitCsvLine(lines[0]);
+                const rows = [];
+
+                for (let i = 1; i < lines.length; i += 1) {
+                    const values = splitCsvLine(lines[i]);
+                    const row = {};
+                    headers.forEach((h, idx) => {
+                        const key = h || "column_" + (idx + 1);
+                        row[key] = values[idx] !== undefined ? values[idx] : "";
+                    });
+                    rows.push(row);
+                }
+
+                return rows;
+            }
+
+            function buildExcelBlobFromRows(rows, sheetName) {
+                if (!window.XLSX) {
+                    return null;
+                }
+
+                const safeRows = Array.isArray(rows) && rows.length > 0 ? rows : [{ note: "No rows returned" }];
+                const worksheet = XLSX.utils.json_to_sheet(safeRows);
+
+                const keys = Object.keys(safeRows[0] || {});
+                worksheet["!cols"] = keys.map((key) => {
+                    let maxLen = key.length;
+                    for (const row of safeRows) {
+                        const value = row[key] === null || row[key] === undefined ? "" : String(row[key]);
+                        if (value.length > maxLen) {
+                            maxLen = value.length;
+                        }
+                    }
+                    return { wch: Math.min(Math.max(maxLen + 2, 12), 50) };
+                });
+
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, sanitizeSheetName(sheetName));
+
+                const arrayBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+                return new Blob([arrayBuffer], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                });
+            }
+
+            function resolveEndpoint() {
+                const proxy = proxyBaseInput.value.trim();
+                const base = proxy ? proxy.replace(/\/$/, "") : directHost;
+                return base + endpointPath;
+            }
+
+            function buildCurl(endpoint, token, payload) {
+                return [
+                    "curl -X POST \"" + endpoint + "\"",
+                    "  -H \"Authorization: apikey " + token + "\"",
+                    "  -H \"Content-Type: application/json\"",
+                    "  -H \"Accept: application/json\"",
+                    "  --data-raw '" + JSON.stringify(payload).replace(/'/g, "'\\''") + "'"
+                ].join(" \\\n");
+            }
+
+            function setDefaultDates() {
+                const now = new Date();
+                const start = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+                const toInput = (d) => {
+                    const y = d.getFullYear();
+                    const m = pad(d.getMonth() + 1);
+                    const day = pad(d.getDate());
+                    const h = pad(d.getHours());
+                    const min = pad(d.getMinutes());
+                    return y + "-" + m + "-" + day + "T" + h + ":" + min;
+                };
+
+                createdInput.value = toInput(start);
+                endInput.value = toInput(now);
+            }
+
+            [createdInput, endInput, latInput, lonInput, radiusInput, showHistoryInput].forEach((el) => {
+                el.addEventListener("input", updatePayloadPreview);
+                el.addEventListener("change", updatePayloadPreview);
+            });
+
+            copyCurlBtn.addEventListener("click", async function() {
+                const token = apiKeyInput.value.trim();
+                const payload = buildPayload();
+                const endpoint = resolveEndpoint();
+                const curl = buildCurl(endpoint, token || "<TOKEN>", payload);
+                try {
+                    await navigator.clipboard.writeText(curl);
+                    setStatus("cURL command copied to clipboard.", false);
+                } catch (_err) {
+                    setStatus("Unable to access clipboard. Copy manually from payload and fields.", true);
+                }
+            });
+
+            form.addEventListener("submit", async function(event) {
+                event.preventDefault();
+                clearDownload();
+
+                const token = apiKeyInput.value.trim();
+                if (!token) {
+                    setStatus("API key token is required.", true);
+                    return;
+                }
+
+                const payload = buildPayload();
+                const validationError = validate(payload);
+                if (validationError) {
+                    setStatus(validationError, true);
+                    return;
+                }
+
+                const endpoint = resolveEndpoint();
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = "Loading...";
+                output.textContent = "Request sent. Waiting for response...";
+
+                try {
+                    const response = await fetch(endpoint, {
+                        method: "POST",
+                        headers: {
+                            "Authorization": "apikey " + token,
+                            "Content-Type": "application/json",
+                            "Accept": "application/json, text/plain, text/csv, application/octet-stream"
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const ct = response.headers.get("content-type") || "unknown";
+                    const disposition = response.headers.get("content-disposition") || "";
+                    const blob = await response.blob();
+
+                    statusCode.textContent = String(response.status);
+                    contentTypeEl.textContent = ct;
+                    fileSizeEl.textContent = bytesToHuman(blob.size);
+
+                    let textForPreview = "";
+                    try {
+                        textForPreview = await blob.text();
+                    } catch (_err) {
+                        textForPreview = "Binary response received.";
+                    }
+
+                    if (!response.ok) {
+                        let parsed = textForPreview;
+                        try {
+                            parsed = JSON.stringify(JSON.parse(textForPreview), null, 2);
+                        } catch (_err) {
+                            parsed = textForPreview || "No response body.";
+                        }
+                        setStatus("Request failed with HTTP " + response.status + ".", true);
+                        output.textContent = parsed;
+                        return;
+                    }
+
+                    const fileName = extractFilename(disposition) || (ct.includes("json") ? "historical-data.json" : "historical-data.bin");
+                    let excelBlob = null;
+
+                    if (ct.includes("application/json")) {
+                        try {
+                            const jsonData = JSON.parse(textForPreview);
+                            const rows = normalizeRowsFromJson(jsonData);
+                            excelBlob = buildExcelBlobFromRows(rows, "HistoricalTraffic");
+                        } catch (_err) {
+                            excelBlob = null;
+                        }
+                    } else if (ct.includes("text/csv") || ct.includes("text/plain")) {
+                        const rows = parseCsvToRows(textForPreview);
+                        excelBlob = buildExcelBlobFromRows(rows, "HistoricalTraffic");
+                    }
+
+                    if (excelBlob) {
+                        objectUrl = URL.createObjectURL(excelBlob);
+                        downloadLink.href = objectUrl;
+                        downloadLink.download = "historical-traffic-data.xlsx";
+                        downloadLink.textContent = "Download Excel (.xlsx)";
+                        downloadLink.classList.remove("hidden");
+                    } else {
+                        objectUrl = URL.createObjectURL(blob);
+                        downloadLink.href = objectUrl;
+                        downloadLink.download = fileName;
+                        downloadLink.textContent = "Download raw response";
+                        downloadLink.classList.remove("hidden");
+                    }
+
+                    if (ct.includes("application/json")) {
+                        try {
+                            output.textContent = JSON.stringify(JSON.parse(textForPreview), null, 2);
+                        } catch (_err) {
+                            output.textContent = textForPreview;
+                        }
+                    } else {
+                        const preview = textForPreview.slice(0, 6000);
+                        output.textContent = "Non-JSON file response. A download link is ready above.\n\nPreview:\n" + preview;
+                    }
+
+                    setStatus("Success. Response received and download is ready.", false);
+                } catch (err) {
+                    setStatus("Network error: " + (err && err.message ? err.message : String(err)), true);
+                    output.textContent = "If this is a CORS error, call the API through your own backend proxy and set the optional proxy URL field.";
+                    statusCode.textContent = "-";
+                    contentTypeEl.textContent = "-";
+                    fileSizeEl.textContent = "-";
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "Fetch historical data";
+                }
+            });
+
+            setDefaultDates();
+            updatePayloadPreview();
+        })();
+    </script>
+</body>
+</html>
