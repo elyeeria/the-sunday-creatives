@@ -402,6 +402,13 @@
                 statusBox.classList.toggle("ok", !isError);
             }
 
+            function sanitizeHeaderValue(value) {
+                return String(value || "")
+                    // Keep only ISO-8859-1 compatible characters for fetch headers.
+                    .replace(/[^\u0000-\u00FF]/g, "")
+                    .trim();
+            }
+
             function clearDownload() {
                 if (objectUrl) {
                     URL.revokeObjectURL(objectUrl);
@@ -813,7 +820,7 @@
             });
 
             copyCurlBtn.addEventListener("click", async function() {
-                const token = apiKeyInput.value.trim();
+                const token = sanitizeHeaderValue(apiKeyInput.value);
                 const payload = buildPayload();
                 const endpoint = resolveEndpoint();
                 const curl = buildCurl(endpoint, token || "<TOKEN>", payload);
@@ -829,9 +836,9 @@
                 event.preventDefault();
                 clearDownload();
 
-                const token = apiKeyInput.value.trim();
+                const token = sanitizeHeaderValue(apiKeyInput.value);
                 if (!token) {
-                    setStatus("API key token is required.", true);
+                    setStatus("API key token is required. Re-paste if it contains hidden characters.", true);
                     return;
                 }
 
