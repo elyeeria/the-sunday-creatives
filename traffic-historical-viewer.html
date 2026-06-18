@@ -308,6 +308,13 @@
         (function() {
             const endpointPath = "/v1/traffic/historicaldata";
             const directHost = "https://api.transport.nsw.gov.au";
+            const defaultValues = {
+                created: "2025-04-27T15:29:00.000+10:00",
+                end: "2025-05-25T15:29:00.000+10:00",
+                latitude: -34.78516,
+                longitude: 150.55769,
+                radius: 20
+            };
 
             const form = document.getElementById("trafficForm");
             const apiKeyInput = document.getElementById("apiKey");
@@ -798,10 +805,11 @@
             }
 
             function setDefaultDates() {
-                const now = new Date();
-                const start = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-
-                const toInput = (d) => {
+                const isoToLocalInput = (isoString) => {
+                    const d = new Date(isoString);
+                    if (Number.isNaN(d.getTime())) {
+                        return "";
+                    }
                     const y = d.getFullYear();
                     const m = pad(d.getMonth() + 1);
                     const day = pad(d.getDate());
@@ -810,8 +818,11 @@
                     return y + "-" + m + "-" + day + "T" + h + ":" + min;
                 };
 
-                createdInput.value = toInput(start);
-                endInput.value = toInput(now);
+                createdInput.value = isoToLocalInput(defaultValues.created);
+                endInput.value = isoToLocalInput(defaultValues.end);
+                latInput.value = String(defaultValues.latitude);
+                lonInput.value = String(defaultValues.longitude);
+                radiusInput.value = String(defaultValues.radius);
             }
 
             [createdInput, endInput, latInput, lonInput, radiusInput, showHistoryInput].forEach((el) => {
