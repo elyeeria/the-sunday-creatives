@@ -430,6 +430,30 @@
                     .slice(0, 31) || "TrafficData";
             }
 
+            function stripHtml(input) {
+                if (input === null || input === undefined) {
+                    return "";
+                }
+                return String(input)
+                    .replace(/<br\s*\/?>/gi, "\n")
+                    .replace(/<\/?p>/gi, "\n")
+                    .replace(/<[^>]+>/g, "")
+                    .replace(/&nbsp;/gi, " ")
+                    .replace(/\n{3,}/g, "\n\n")
+                    .trim();
+            }
+
+            function toIsoFromEpoch(value) {
+                if (typeof value !== "number" || !Number.isFinite(value)) {
+                    return "";
+                }
+                try {
+                    return new Date(value).toISOString();
+                } catch (_err) {
+                    return "";
+                }
+            }
+
             function flattenObject(input, prefix, out) {
                 if (input === null || input === undefined) {
                     out[prefix] = "";
@@ -540,15 +564,161 @@
                 return rows;
             }
 
-            function buildExcelBlobFromRows(rows, sheetName) {
-                if (!window.XLSX) {
+            function buildStructuredSheetsFromApi(jsonData) {
+                const resultRows = jsonData && Array.isArray(jsonData.result) ? jsonData.result : null;
+                if (!resultRows) {
                     return null;
                 }
 
-                const safeRows = Array.isArray(rows) && rows.length > 0 ? rows : [{ note: "No rows returned" }];
-                const worksheet = XLSX.utils.json_to_sheet(safeRows);
+                const incidents = [];
+                const roads = [];
+                const lanes = [];
+                const links = [];
+                const periods = [];
 
-                const keys = Object.keys(safeRows[0] || {});
+                for (let idx = 0; idx < resultRows.length; idx += 1) {
+                    const record = resultRows[idx] || {};
+                    const hz = record.Hazards || {};
+                    const feature = hz.features || {};
+                    const props = feature.properties || {};
+                    const geom = feature.geometry || {};
+
+                    const coords = Array.isArray(geom.coordinates) ? geom.coordinates : [];
+                    const longitude = coords.length > 0 ? coords[0] : "";
+                    const latitude = coords.length > 1 ? coords[1] : "";
+
+                    const roadsArr = Array.isArray(props.roads) ? props.roads : [];
+                    const firstRoad = roadsArr[0] || {};
+
+                    const incidentId = hz.uniqueIncidentId || hz.id || feature.id || "incident-" + (idx + 1);
+
+                    incidents.push({
+                        IncidentId: incidentId,
+                        DisplayName: props.displayName || "",
+                        MainCategory: props.mainCategory || "",
+                        SubCategoryA: props.subCategoryA || "",
+                        SubCategoryB: props.subCategoryB || "",
+                        IncidentKind: props.incidentKind || "",
+                        Ended: props.ended,
+                        IsMajor: props.isMajor,
+                        ImpactingNetwork: props.impactingNetwork,
+                        Created: toIsoFromEpoch(props.created),
+                        LastUpdated: toIsoFromEpoch(props.lastUpdated),
+                        Start: toIsoFromEpoch(props.start),
+                        End: toIsoFromEpoch(props.end),
+                        ExpectedDelay: props.expectedDelay,
+                        SpeedLimit: props.speedLimit,
+                        Region: firstRoad.region || "",
+                        Suburb: firstRoad.suburb || "",
+                        MainStreet: firstRoad.mainStreet || "",
+                        CrossStreet: firstRoad.crossStreet || "",
+                        LocationQualifier: firstRoad.locationQualifier || "",
+                        Latitude: latitude,
+                        Longitude: longitude,
+                        AdviceA: props.adviceA || "",
+                        AdviceB: props.adviceB || "",
+                        AdviceC: props.adviceC || "",
+                        Headline: props.headline || "",
+                        OtherAdvice: stripHtml(props.otherAdvice),
+                        AttendingGroups: Array.isArray(props.attendingGroups) ? props.attendingGroups.filter(Boolean).join(" | ") : "",
+                        AdditionalInfo: Array.isArray(props.additionalInfo) ? props.additionalInfo.filter(Boolean).join(" | ") : "",
+                        LayerName: hz.layerName || "",
+                        SourceSystem: hz.sourceSystemName || "",
+                        LoadType: hz.loadTypeName || ""
+                    });
+
+                    for (let r = 0; r < roadsArr.length; r += 1) {
+                        const road = roadsArr[r] || {};
+                        const impactedLanes = Array.isArray(road.impactedLanes) ? road.impactedLanes : [];
+
+                        roads.push({
+                            IncidentId: incidentId,
+                            RoadIndex: r + 1,
+                            MainStreet: road.mainStreet || "",
+                            CrossStreet: road.crossStreet || "",
+                            SecondLocation: road.secondLocation || "",
+                            Suburb: road.suburb || "",
+                            Region: road.region || "",
+                            LocationQualifier: road.locationQualifier || "",
+                            Delay: road.delay || "",
+                            QueueLength: road.queueLength,
+                            TrafficVolume: road.trafficVolume || "",
+                            ImpactedLaneCount: impactedLanes.length
+                        });
+
+                        for (let l = 0; l < impactedLanes.length; l += 1) {
+                            const lane = impactedLanes[l] || {};
+                            lanes.push({
+                                IncidentId: incidentId,
+                                RoadIndex: r + 1,
+                                LaneIndex: l + 1,
+                                AffectedDirection: lane.affectedDirection || "",
+                                Extent: lane.extent || "",
+                                ClosedLanes: lane.closedLanes || "",
+                                NumberOfLanes: lane.numberOfLanes || "",
+                                Description: lane.description || "",
+                                RoadType: lane.roadType || ""
+                            });
+                        }
+                    }
+
+                    const webLinks = Array.isArray(props.webLinks) ? props.webLinks : [];
+                    for (let w = 0; w < webLinks.length; w += 1) {
+                        const link = webLinks[w] || {};
+                        links.push({
+                            IncidentId: incidentId,
+                            LinkIndex: w + 1,
+                            LinkText: link.linkText || "",
+                            LinkUrl: link.linkURL || ""
+                        });
+                    }
+
+                    const periodsArr = Array.isArray(props.periods) ? props.periods : [];
+                    for (let p = 0; p < periodsArr.length; p += 1) {
+                        const period = periodsArr[p] || {};
+                        periods.push({
+                            IncidentId: incidentId,
+                            PeriodIndex: p + 1,
+                            ClosureType: period.closureType || "",
+                            Direction: period.direction || "",
+                            RoadExtent: period.roadextent || "",
+                            RoadType: period.roadtype || "",
+                            FromDay: period.fromDay || "",
+                            ToDay: period.toDay || "",
+                            StartTime: period.startTime || "",
+                            FinishTime: period.finishTime || ""
+                        });
+                    }
+                }
+
+                return [
+                    {
+                        name: "Summary",
+                        rows: [{
+                            RecordCount: jsonData.count,
+                            ExportedIncidents: incidents.length,
+                            ExportedRoads: roads.length,
+                            ExportedLanes: lanes.length,
+                            ExportedLinks: links.length,
+                            ExportedPeriods: periods.length,
+                            ExportedAtUtc: new Date().toISOString()
+                        }]
+                    },
+                    { name: "Incidents", rows: incidents },
+                    { name: "Roads", rows: roads },
+                    { name: "ImpactedLanes", rows: lanes },
+                    { name: "WebLinks", rows: links },
+                    { name: "Periods", rows: periods }
+                ];
+            }
+
+            function applyWorksheetFormatting(worksheet, rows) {
+                const safeRows = Array.isArray(rows) ? rows : [];
+                if (safeRows.length === 0) {
+                    return;
+                }
+
+                const keys = Object.keys(safeRows[0]);
                 worksheet["!cols"] = keys.map((key) => {
                     let maxLen = key.length;
                     for (const row of safeRows) {
@@ -557,8 +727,43 @@
                             maxLen = value.length;
                         }
                     }
-                    return { wch: Math.min(Math.max(maxLen + 2, 12), 50) };
+                    return { wch: Math.min(Math.max(maxLen + 2, 10), 60) };
                 });
+
+                const range = XLSX.utils.decode_range(worksheet["!ref"]);
+                worksheet["!autofilter"] = {
+                    ref: XLSX.utils.encode_range({ s: { c: 0, r: 0 }, e: { c: range.e.c, r: range.e.r } })
+                };
+            }
+
+            function buildExcelBlobFromSheets(sheets) {
+                if (!window.XLSX) {
+                    return null;
+                }
+
+                const workbook = XLSX.utils.book_new();
+
+                for (const sheet of sheets) {
+                    const rows = Array.isArray(sheet.rows) && sheet.rows.length > 0 ? sheet.rows : [{ note: "No rows" }];
+                    const worksheet = XLSX.utils.json_to_sheet(rows);
+                    applyWorksheetFormatting(worksheet, rows);
+                    XLSX.utils.book_append_sheet(workbook, worksheet, sanitizeSheetName(sheet.name));
+                }
+
+                const arrayBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+                return new Blob([arrayBuffer], {
+                    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                });
+            }
+
+            function buildExcelBlobFromRows(rows, sheetName) {
+                if (!window.XLSX) {
+                    return null;
+                }
+
+                const safeRows = Array.isArray(rows) && rows.length > 0 ? rows : [{ note: "No rows returned" }];
+                const worksheet = XLSX.utils.json_to_sheet(safeRows);
+                applyWorksheetFormatting(worksheet, safeRows);
 
                 const workbook = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(workbook, worksheet, sanitizeSheetName(sheetName));
@@ -687,8 +892,13 @@
                     if (ct.includes("application/json")) {
                         try {
                             const jsonData = JSON.parse(textForPreview);
-                            const rows = normalizeRowsFromJson(jsonData);
-                            excelBlob = buildExcelBlobFromRows(rows, "HistoricalTraffic");
+                            const structuredSheets = buildStructuredSheetsFromApi(jsonData);
+                            if (structuredSheets) {
+                                excelBlob = buildExcelBlobFromSheets(structuredSheets);
+                            } else {
+                                const rows = normalizeRowsFromJson(jsonData);
+                                excelBlob = buildExcelBlobFromRows(rows, "HistoricalTraffic");
+                            }
                         } catch (_err) {
                             excelBlob = null;
                         }
